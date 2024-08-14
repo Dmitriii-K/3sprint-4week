@@ -31,12 +31,12 @@ describe('UNIT', () => {
         const checkCredention = authService.checkCredentials;
 
         it('should return user if email or login is valid', async () => {
-            AuthRepository.findUserByLogiOrEmail = jest.fn().mockImplementation((user: string)=> true)
+            AuthRepository.findUserByLoginOrEmail = jest.fn().mockImplementation((user: string)=> true)
             const result = await checkCredention('testemail@gmail.com');
             expect(result).toBeTruthy();
         });
         it('should return null if user is not found', async () => {
-            AuthRepository.findUserByLogiOrEmail = jest.fn().mockImplementation((user: string)=> null)
+            AuthRepository.findUserByLoginOrEmail = jest.fn().mockImplementation((user: string)=> null)
             const result = await authService.checkCredentials('nonexistentuser@example.com');
             expect(result).toBeNull();
         });

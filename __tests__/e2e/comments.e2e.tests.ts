@@ -1,12 +1,26 @@
-import request from 'supertest';
-const app = require('./app');  // Путь к вашему основному файлу приложения
+import { app } from "../../src/app";
+import { agent } from "supertest";
+export const req = agent(app);
+
+import mongoose from "mongoose";
+import { SETTINGS } from "../../src/settings";
 
 describe('CommentsController', () => {
+
+    beforeAll(async () => {
+        /* Connecting to the database. */
+        await mongoose.connect(SETTINGS.MONGO_URL)
+    })
+    afterAll(async () => {
+        /* Closing database connection after each test. */
+        await mongoose.connection.close()
+    })
+
     describe('GET /comments/:id', () => {
         it('should return a comment and return 200 status', async () => {
             const commentId = 'validCommentId';
 
-            const response = await request(app)
+            const response = await req
                 .get(`/comments/${commentId}`)
                 .expect(200);
 
@@ -20,7 +34,7 @@ describe('CommentsController', () => {
         it('should return 404 if comment does not exist', async () => {
             const invalidCommentId = 'invalidCommentId';
 
-            await request(app)
+            await req
                 .get(`/comments/${invalidCommentId}`)
                 .expect(404);
         });
@@ -33,7 +47,7 @@ describe('CommentsController', () => {
             };
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .put(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send(updateData)
@@ -47,7 +61,7 @@ describe('CommentsController', () => {
             };
             const invalidAccessToken = 'invalidAccessToken';
 
-            await request(app)
+            await req
                 .put(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${invalidAccessToken}`)
                 .send(updateData)
@@ -61,7 +75,7 @@ describe('CommentsController', () => {
             };
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .put(`/comments/${invalidCommentId}`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send(updateData)
@@ -76,7 +90,7 @@ describe('CommentsController', () => {
             };
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .put(`/comments/${commentId}/like-status`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send(likeStatusData)
@@ -90,7 +104,7 @@ describe('CommentsController', () => {
             };
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .put(`/comments/${invalidCommentId}/like-status`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send(likeStatusData)
@@ -102,7 +116,7 @@ describe('CommentsController', () => {
             const commentId = 'validCommentId';
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .delete(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(204);
@@ -112,7 +126,7 @@ describe('CommentsController', () => {
             const commentId = 'validCommentId';
             const invalidAccessToken = 'invalidAccessToken';
 
-            await request(app)
+            await req
                 .delete(`/comments/${commentId}`)
                 .set('Authorization', `Bearer ${invalidAccessToken}`)
                 .expect(403);
@@ -122,7 +136,7 @@ describe('CommentsController', () => {
             const invalidCommentId = 'invalidCommentId';
             const accessToken = 'validAccessToken';
 
-            await request(app)
+            await req
                 .delete(`/comments/${invalidCommentId}`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(404);

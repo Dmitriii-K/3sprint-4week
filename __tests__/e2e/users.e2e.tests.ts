@@ -64,7 +64,7 @@ describe('UserController', () => {
         });
     });
     describe('DELETE /users/:id', () => {
-        it.skip('should delete a user and return 204 status', async () => {
+        it('should delete a user and return 204 status', async () => {
             await UserModel.deleteMany({});
             const newUser = {
                 login: 'todelete',
@@ -78,10 +78,9 @@ describe('UserController', () => {
                 .send(newUser)
                 .expect(201);
 
-            const userId = createResponse.body.id;
-            console.log(userId)
+            console.log(createResponse.body.id)
             await req
-                .delete(SETTINGS.PATH.USERS + userId)
+                .delete(`/users/${createResponse.body.id}`)
                 .set({ Authorization: "Basic " + codedAuth })
                 .expect(204);
         });

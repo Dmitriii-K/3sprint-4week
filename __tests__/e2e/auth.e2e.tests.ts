@@ -1,14 +1,28 @@
-import request from 'supertest';
-const app = require('./app'); // Путь к вашему основному файлу приложения
+import { app } from "../../src/app";
+import { agent } from "supertest";
+export const req = agent(app);
+
+import mongoose from "mongoose";
+import { SETTINGS } from "../../src/settings";
 
 describe('AuthController', () => {
+
+    beforeAll(async () => {
+        /* Connecting to the database. */
+        await mongoose.connect(SETTINGS.MONGO_URL)
+    })
+    afterAll(async () => {
+        /* Closing database connection after each test. */
+        await mongoose.connection.close()
+    })
+
     describe('POST /auth/login', () => {
         it('should login user and return 200 status with access token', async () => {
             const loginData = {
                 loginOrEmail: 'testuser',
                 password: 'testpassword'
             };
-            const response = await request(app)
+            const response = await req
                 .post('/auth/login')
                 .send(loginData)
                 .expect(200);
@@ -22,7 +36,7 @@ describe('AuthController', () => {
                 password: 'invalidpassword'
             };
 
-            await request(app)
+            await req
                 .post('/auth/login')
                 .send(invalidLoginData)
                 .expect(401);
@@ -34,7 +48,7 @@ describe('AuthController', () => {
                 email: 'testuser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/password-recovery')
                 .send(recoveryData)
                 .expect(204);
@@ -45,7 +59,7 @@ describe('AuthController', () => {
                 email: 'invaliduser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/password-recovery')
                 .send(invalidRecoveryData)
                 .expect(505);
@@ -58,7 +72,7 @@ describe('AuthController', () => {
                 recoveryCode: 'validRecoveryCode'
             };
 
-            await request(app)
+            await req
                 .post('/auth/new-password')
                 .send(newPasswordData)
                 .expect(204);
@@ -70,7 +84,7 @@ describe('AuthController', () => {
                 recoveryCode: 'invalidRecoveryCode'
             };
 
-            await request(app)
+            await req
                 .post('/auth/new-password')
                 .send(invalidNewPasswordData)
                 .expect(400);
@@ -80,7 +94,7 @@ describe('AuthController', () => {
         it('should refresh token and return 200 status with new access token', async () => {
             const refreshToken = 'validRefreshToken';
 
-            const response = await request(app)
+            const response = await req
                 .post('/auth/refresh-token')
                 .set('Cookie', `refreshToken=${refreshToken}`)
                 .expect(200);
@@ -91,7 +105,7 @@ describe('AuthController', () => {
         it('should return 401 if refresh token is invalid', async () => {
             const invalidRefreshToken = 'invalidRefreshToken';
 
-            await request(app)
+            await req
                 .post('/auth/refresh-token')
                 .set('Cookie', `refreshToken=${invalidRefreshToken}`)
                 .expect(401);
@@ -105,7 +119,7 @@ describe('AuthController', () => {
                 email: 'newuser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration')
                 .send(registrationData)
                 .expect(204);
@@ -118,7 +132,7 @@ describe('AuthController', () => {
                 email: 'existinguser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration')
                 .send(existingUser)
                 .expect(400);
@@ -130,7 +144,7 @@ describe('AuthController', () => {
                 code: 'validConfirmationCode'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration-confirmation')
                 .send(confirmationData)
                 .expect(204);
@@ -141,7 +155,7 @@ describe('AuthController', () => {
                 code: 'invalidConfirmationCode'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration-confirmation')
                 .send(invalidConfirmationData)
                 .expect(400);
@@ -153,7 +167,7 @@ describe('AuthController', () => {
                 email: 'testuser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration-email-resending')
                 .send(resendData)
                 .expect(204);
@@ -164,7 +178,7 @@ describe('AuthController', () => {
                 email: 'invaliduser@example.com'
             };
 
-            await request(app)
+            await req
                 .post('/auth/registration-email-resending')
                 .send(invalidResendData)
                 .expect(400);
@@ -174,7 +188,7 @@ describe('AuthController', () => {
         it('should logout user and return 204 status', async () => {
             const refreshToken = 'validRefreshToken';
 
-            await request(app)
+            await req
                 .post('/auth/logout')
                 .set('Cookie', `refreshToken=${refreshToken}`)
                 .expect(204);
@@ -183,7 +197,7 @@ describe('AuthController', () => {
         it('should return 401 if refresh token is invalid', async () => {
             const invalidRefreshToken = 'invalidRefreshToken';
 
-            await request(app)
+            await req
                 .post('/auth/logout')
                 .set('Cookie', `refreshToken=${invalidRefreshToken}`)
                 .expect(401);
@@ -193,7 +207,7 @@ describe('AuthController', () => {
         it('should return user information and return 200 status', async () => {
             const accessToken = 'validAccessToken';
 
-            const response = await request(app)
+            const response = await req
                 .get('/auth/me')
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(200);
@@ -206,7 +220,7 @@ describe('AuthController', () => {
         it('should return 401 if access token is invalid', async () => {
             const invalidAccessToken = 'invalidAccessToken';
 
-            await request(app)
+            await req
                 .get('/auth/me')
                 .set('Authorization', `Bearer ${invalidAccessToken}`)
                 .expect(401);

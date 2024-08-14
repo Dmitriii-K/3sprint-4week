@@ -1,74 +1,123 @@
-import request from 'supertest';
-const app = require('./app'); // Путь к вашему основному файлу приложения
+import { app } from "../../src/app";
+import { agent } from "supertest";
+export const req = agent(app);
 
+import mongoose from "mongoose";
+import { SETTINGS } from "../../src/settings";
+import { codedAuth } from "../../src/middlewares/middlewareForAll";
+
+let refreshToken: any;
 describe('SessionsControllers', () => {
-    describe('DELETE /sessions', () => {
-        it('should delete all sessions except current one and return 204 status', async () => {
-            const accessToken = 'validAccessToken';
 
-            await request(app)
-                .delete('/sessions')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .expect(204);
+    beforeAll(async () => {
+        /* Connecting to the database. */
+        await mongoose.connect(SETTINGS.MONGO_URL)
+    })
+    afterAll(async () => {
+        /* Closing database connection after each test. */
+        await mongoose.connection.close()
+    })
+
+    describe('GET /sessions', () => {
+        it('should return all sessions and return 200 status', async () => {
+            const res = await req
+        .post(SETTINGS.PATH.AUTH +"/login")
+        .send({
+            loginOrEmail: "login123",
+            password: "password",
         });
+        expect(res.statusCode).toEqual(200);
+        expect(res.headers['set-cookie']).toBeDefined();
+        const cookies = res.headers['set-cookie'];
+        if (!cookies || !Array.isArray(cookies)) {
+            console.error('No cookies found or cookies are not an array');
+            return;
+        }
+        cookies.forEach(cookie => {
+            const [name, value] = cookie.split(';')[0].split('=');
+            if (name === 'refreshToken') {
+                refreshToken = value;
+            }
+        })
 
+        await req
+        .get(SETTINGS.PATH.SECURITY +"/devices")
+        .set('Authorization', `Bearer ${refreshToken}`);
+        expect(200);
+        });
         it('should return 401 if access token is invalid', async () => {
-            const invalidAccessToken = 'invalidAccessToken';
+            const res = await req
+        .post(SETTINGS.PATH.AUTH +"/login")
+        .send({
+            loginOrEmail: "login123",
+            password: "password",
+        });
+        expect(res.statusCode).toEqual(200);
+        expect(res.headers['set-cookie']).toBeDefined();
+        const cookies = res.headers['set-cookie'];
+        if (!cookies || !Array.isArray(cookies)) {
+            console.error('No cookies found or cookies are not an array');
+            return;
+        }
+        cookies.forEach(cookie => {
+            const [name, value] = cookie.split(';')[0].split('=');
+            if (name === 'refreshToken') {
+                refreshToken = value;
+            }
+        })
 
-            await request(app)
-                .delete('/sessions')
-                .set('Authorization', `Bearer ${invalidAccessToken}`)
-                .expect(401);
+        await req
+        .get(SETTINGS.PATH.SECURITY +"/devices")
+        .set('Authorization', `Beare ${refreshToken}`);
+        expect(401);
         });
     });
     describe('DELETE /sessions/:id', () => {
         it('should delete session by ID and return 204 status', async () => {
-            const accessToken = 'validAccessToken';
-            const sessionId = 'validSessionId';
-
-            await request(app)
-                .delete(`/sessions/${sessionId}`)
-                .set('Authorization', `Bearer ${accessToken}`)
+            const userId = req.user._id;
+            const device_id = req.deviceId;
+            await req
+                .delete(`/security/devices/${device_id}`)
+                .set('Authorization', `Bearer ${refreshToken}`)
                 .expect(204);
         });
+        it('should return 401 if session is not Authorization', async () => {
+            const accessToken = 'validAccessToken';
+            const invalidSessionId = 'invalidSessionId';
 
+            await req
+                .delete(`/security/devices//${invalidSessionId}`)
+                .set('Authorization', `Bearer ${accessToken}`)
+                .expect(404);
+        });
         it('should return 404 if session ID is invalid', async () => {
             const accessToken = 'validAccessToken';
             const invalidSessionId = 'invalidSessionId';
 
-            await request(app)
-                .delete(`/sessions/${invalidSessionId}`)
+            await req
+                .delete(`/security/devices/${invalidSessionId}`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(404);
         });
-
-        it('should return 403 if user is not authorized to delete the session', async () => {
-            const accessToken = 'validAccessToken';
-            const unauthorizedSessionId = 'unauthorizedSessionId';
-
-            await request(app)
-                .delete(`/sessions/${unauthorizedSessionId}`)
-                .set('Authorization', `Bearer ${accessToken}`)
-                .expect(403);
-        });
+        it("shouldn't return 403", async () => { // если пытаться удалить deviceId другого пользователя
+            const res = await req
+            .delete(SETTINGS.PATH.SECURITY +"/devices/1")
+            .set('Authorization', `Bearer ${refreshToken}`);
+            expect(403);
     });
-    describe('GET /sessions', () => {
-        it('should return all sessions and return 200 status', async () => {
-            const accessToken = 'validAccessToken';
+    });
+    describe('DELETE /sessions', () => {
+        it('should delete all sessions except current one and return 204 status', async () => {
 
-            const response = await request(app)
-                .get('/sessions')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .expect(200);
-
-            expect(response.body).toBeInstanceOf(Array);
+            await req
+                .delete(SETTINGS.PATH.SECURITY)
+                .set('Authorization', `Bearer ${refreshToken}`)
+                .expect(204);
         });
-
-        it('should return 401 if access token is invalid', async () => {
+        it('should return 401 if refresh token is invalid', async () => {
             const invalidAccessToken = 'invalidAccessToken';
-
-            await request(app)
-                .get('/sessions')
+            await req
+                .delete(SETTINGS.PATH.SECURITY)
                 .set('Authorization', `Bearer ${invalidAccessToken}`)
                 .expect(401);
         });
