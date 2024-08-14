@@ -15,8 +15,6 @@ export class CommetRepository {
         return LikesModel.find({ commentId: mongoPostId }).exec();
     }
     static async findLike(commentId: string, userId: string){
-        // console.log(commentId)//********************
-        // console.log(userId)//********************
         const mongoCommentId = new ObjectId(commentId);
         const mongoUserId = new ObjectId(userId);
         const like = await LikesModel.findOne({ commentId: mongoCommentId, userId: mongoUserId });
@@ -27,7 +25,6 @@ export class CommetRepository {
         return (await result)._id.toString()
     }
     static async updateLikeStatus (id : string, updateStatus : string) {
-        // console.log(id) //*************************
         const mongoId = new ObjectId(id);
         const result = await LikesModel.updateOne({ commentId: mongoId },{$set: { status: updateStatus }});
         return result.modifiedCount === 1

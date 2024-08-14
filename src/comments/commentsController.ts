@@ -8,7 +8,6 @@ export class CommentsController {
     static getComment = async (req: Request, res: Response<CommentViewModel>) => {
         try {
         const userId : string | null = req.user ? req.user._id.toString() : null;
-        // console.log(userId)//********************
         const comment = await CommentQueryRepository.findCommentById(req.params.id , userId);
         if(comment) {
             return res.status(200).json(comment)
@@ -44,7 +43,6 @@ export class CommentsController {
         try {
             const user = req.user ? req.user : null;
             const comment = await CommentQueryRepository.findCommentById(req.params.id , user._id.toString());
-            // console.log(comment)//********************
             if(!comment) {
                 res.sendStatus(404);
                 return;

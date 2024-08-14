@@ -52,7 +52,6 @@ export class PostController {
     ) => {
         try{
             const user = req.user ? req.user : null;
-            // console.log('User control:', user);//********************
         const posts = await PostQueryRepository.getAllPosts(req.query, user)
         res.status(200).json(posts);
         }catch (e) {
@@ -78,7 +77,6 @@ export class PostController {
     static getCommentByPost = async (req:Request<PstId, {},{},TypePostHalper>, res:Response<PaginatorCommentViewModelDB>) => {
         try {
             const userId : string | null = req.user ? req.user._id.toString() : null;
-            // console.log('UserId contr:', userId);//********************
             const comments = await PostQueryRepository.findCommentByPost(req.query, req.params.id, userId)
             if(comments.items.length < 1) {
                 res.sendStatus(404)
@@ -94,9 +92,7 @@ export class PostController {
     static updateLikeStatus = async (req: Request<PstId, {}, { likeStatus: likeStatus }>, res: Response) => {
         try {
             const user = req.user ? req.user : null;
-            // console.log(userId)//********************
             const post = await PostRepository.findPostById(req.params.id);
-            // console.log(post)//********************
             if(!post) {
                 res.sendStatus(404);
                 return;

@@ -5,7 +5,6 @@ import { BlogModel, PostModel } from "../db/schema-model-db";
 import { PostQueryRepository } from "../posts/postsQueryRepository";
 import { halper } from "../middlewares/middlewareForAll";
 import { PostDbType } from "../input-output-types/posts-type";
-import { UserDBModel } from "../input-output-types/users-type";
 import { likeStatus } from "../input-output-types/comments-type";
 import { CommetRepository } from "../comments/commentRepository";
 
@@ -58,12 +57,9 @@ export class BlogQueryRepository {
         const totalCount = await PostModel.countDocuments({ blogId: id });
 
         const items = await Promise.all(posts.map( async post => {
-            // console.log('Comment ID:', comment._id);//********************
             let like 
             if(userId){
-                // console.log('UserId repo:', userId);//********************
                 like = await CommetRepository.findLike(post._id.toString() , userId);
-                // console.log('Like status:', like);//********************
             } 
             const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
             const userLikeStatus = like ? like.status : likeStatus.None;

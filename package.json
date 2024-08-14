@@ -5,14 +5,12 @@
   "repository": "https://github.com/Dmitriii-K/3sprint-4week.git",
   "author": "Dmitriii-K <dmitriii.kirilenko@yandex.by>",
   "license": "MIT",
-
   "scripts": {
     "watch": "tsc -w",
     "dev": "yarn nodemon --inspect dist/index.js",
     "jest": "jest -i",
     "jest:coverage": "jest -i --coverage"
   },
-
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

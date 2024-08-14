@@ -1,4 +1,4 @@
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 // import { blogCollection, commentCollection, postCollection } from "../db/mongo-db";
 import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { CommentDBType } from "../input-output-types/comments-type";

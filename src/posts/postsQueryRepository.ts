@@ -1,6 +1,6 @@
 import { ObjectId, WithId } from "mongodb";
-import { CommentDBType, CommentViewModel, likeStatus, LikesType, PaginatorCommentViewModelDB } from "../input-output-types/comments-type";
-import { NewestLikesType, PaginatorPostViewModel, PostDbType, PostViewModel, TypePostHalper } from "../input-output-types/posts-type";
+import { CommentDBType, CommentViewModel, likeStatus, LikesType } from "../input-output-types/comments-type";
+import { NewestLikesType, PostDbType, PostViewModel, TypePostHalper } from "../input-output-types/posts-type";
 // import { commentCollection, postCollection } from "../db/mongo-db";
 import { halper, commentsPagination } from "../middlewares/middlewareForAll";
 import { CommentModel, PostModel } from "../db/schema-model-db";
@@ -20,12 +20,9 @@ export class PostQueryRepository {
         const totalCount = await PostModel.countDocuments({});
     
         const items = await Promise.all(posts.map(async post => {
-            // console.log('Post ID rep:', post._id);//********************
             let like;
             if (user) {
-                // console.log('User repo:', user);//********************
                 like = await CommetRepository.findLike(post._id.toString(), user._id.toString());
-                // console.log('Like status:', like);//********************
             }
             const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
             const userLikeStatus = like ? like.status : likeStatus.None;
@@ -50,7 +47,6 @@ export class PostQueryRepository {
         if(userId){
             like = await CommetRepository.findLike(postId , userId);
         } 
-        // console.log(like)//********************
         const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
         const userLikeStatus = like ? like.status : likeStatus.None;
         return PostQueryRepository.mapPost(post, userLikeStatus, allLikes);
@@ -75,12 +71,9 @@ export class PostQueryRepository {
             const totalCount = await CommentModel.countDocuments({ postId: id });
 
             const items = await Promise.all(comments.map( async comment => {
-                // console.log('Comment ID:', comment._id);//********************
                 let like 
                 if(userId){
-                    // console.log('UserId repo:', userId);//********************
                     like = await CommetRepository.findLike(comment._id.toString() , userId);
-                    // console.log('Like status:', like);//********************
                 } 
                 const userLikeStatus = like ? like.status : likeStatus.None;
                 return CommentQueryRepository.mapComment(comment, userLikeStatus);

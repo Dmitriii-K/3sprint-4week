@@ -2,10 +2,9 @@ import { Response, Request, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
 import { SETTINGS } from "../settings";
 // import { apiCollection, blogCollection, sessionsCollection, userCollection } from "../db/mongo-db";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { SortDirection } from "../input-output-types/eny-type";
 import { jwtService } from "../adapters/jwtToken";
-import { UserDBModel } from "../input-output-types/users-type";
 import { AuthRepository } from "../auth/authRepository";
 import { UserQueryRepository } from "../users/userQueryRepository";
 import { SessionsRepository } from "../security-devices/sessionsRepository";
@@ -346,7 +345,6 @@ if(!req.headers.authorization) {
   const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
   if(user) {
     req.user = user;
-    // console.log(req.user)//********************
     next();
     return
   } else {
@@ -365,7 +363,6 @@ export const softBearerAuth = async (req: Request<any, any, any, any>, res: Resp
     const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
     if(user) {
       req.user = user;
-      // console.log('req user:', req.user)//********************
       next();
       return
     } else {
@@ -375,7 +372,6 @@ export const softBearerAuth = async (req: Request<any, any, any, any>, res: Resp
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
   if(!req.cookies.refreshToken) {
-    // console.log(req.cookies)
     res.sendStatus(401);
     return
   };

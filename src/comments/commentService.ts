@@ -22,9 +22,6 @@ export class CommentService {
     }
     static async likeStatus(user: WithId<UserDBModel>, data: likeStatus, comment: CommentViewModel) {
         const existLike = await CommetRepository.findLike(comment.id, user._id.toString())
-        // console.log(userId)//********************
-        // console.log(data)//********************
-        // console.log(existLike)//********************
         if(!existLike){
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
@@ -61,8 +58,7 @@ export class CommentService {
                     comment.likesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                // console.log(existLike.status)//********************
-                await CommetRepository.updateLikeStatus(/*userId,*/comment.id, existLike.status);
+                await CommetRepository.updateLikeStatus(comment.id, existLike.status);
                 await CommetRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
                 return true
             }

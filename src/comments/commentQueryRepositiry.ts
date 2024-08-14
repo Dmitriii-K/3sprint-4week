@@ -6,8 +6,6 @@ import { CommetRepository } from "./commentRepository";
 
 export class CommentQueryRepository {
     static async findCommentById (commentId: string , userId: string | null) {
-        // console.log(userId)//********************
-        // console.log(id)//********************
         const mongoCommentId = new ObjectId(commentId);
         const comment = await CommentModel.findOne({_id: mongoCommentId});
         if (!comment) {
@@ -17,7 +15,6 @@ export class CommentQueryRepository {
         if(userId){
             like = await CommetRepository.findLike(commentId , userId);
         } 
-        // console.log(like)//********************
         const userLikeStatus = like ? like.status : likeStatus.None;
         return CommentQueryRepository.mapComment(comment, userLikeStatus);
     }

@@ -3,7 +3,7 @@ import { BlogPostInputModel } from "../input-output-types/eny-type";
 import { PostDbType } from "../input-output-types/posts-type";
 import { BlogRepository } from "./blogRepository";
 
-export class BlogSessions {
+export class BlogService {
     static async createBlog (data: BlogInputModel) {
         const createDate = new Date().toISOString();
         const newBlog: BlogDbType = {

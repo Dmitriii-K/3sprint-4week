@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { SETTINGS } from "../settings";
-import { PostDbType} from "../input-output-types/posts-type";
-import { CommentDBType } from "../input-output-types/comments-type";
-import { BlogDbType } from "../input-output-types/blogs-type";
-import { UserDBModel } from "../input-output-types/users-type";
-import { Collection, Db, MongoClient } from "mongodb";
-import { ApiInfoType/*, tokenType*/ } from "../input-output-types/eny-type";
-// import { DeviceViewModel } from "../input-output-types/device-type";
-import { SessionsType } from "../input-output-types/sessions-types";
+// import { PostDbType} from "../input-output-types/posts-type";
+// import { CommentDBType } from "../input-output-types/comments-type";
+// import { BlogDbType } from "../input-output-types/blogs-type";
+// import { UserDBModel } from "../input-output-types/users-type";
+// import { Collection, Db, MongoClient } from "mongodb";
+// import { ApiInfoType/*, tokenType*/ } from "../input-output-types/eny-type";
+// // import { DeviceViewModel } from "../input-output-types/device-type";
+// import { SessionsType } from "../input-output-types/sessions-types";
 
 // получение доступа к бд
 // let client: MongoClient = new MongoClient(SETTINGS.MONGO_URL);

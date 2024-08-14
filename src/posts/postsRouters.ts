@@ -29,5 +29,5 @@ postRouter.put(
   PostController.updatePost
 );
 postRouter.post("/:id/comments", bearerAuth, commentsValidation, inputCheckErrorsMiddleware, PostController.createCommentByPostId);
-postRouter.get("/:id/comments", softBearerAuth, PostController.getCommentByPost)
+postRouter.get("/:id/comments", softBearerAuth, PostController.getCommentByPost);
 postRouter.delete("/:id", authMiddleware, PostController.deletePost);

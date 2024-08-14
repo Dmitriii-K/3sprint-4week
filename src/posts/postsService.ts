@@ -1,9 +1,8 @@
 import { WithId } from "mongodb";
 import { CommentDBType, CommentInputModel, LikesType, likeStatus } from "../input-output-types/comments-type";
-import { PostDbType, PostInputModel, PostViewModel } from "../input-output-types/posts-type";
+import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { UserDBModel } from "../input-output-types/users-type";
 import { PostRepository } from "./postsRepository";
-import { UserRepository } from "../users/userRepository";
 import { CommetRepository } from "../comments/commentRepository";
 
 export class PostService {
@@ -45,9 +44,6 @@ export class PostService {
     }
     static async updatePostLike(user: WithId<UserDBModel>, data: likeStatus, post: WithId<PostDbType>) {
         const existLike = await CommetRepository.findLike( post._id.toString(), user._id.toString())
-        // console.log(userId)//********************
-        // console.log(data)//********************
-        // console.log(existLike)//********************
         if(!existLike){
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
@@ -84,7 +80,6 @@ export class PostService {
                     post.extendedLikesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                // console.log(existLike.status)//********************
                 await CommetRepository.updateLikeStatus(post._id.toString(), existLike.status);
                 await PostRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
                 return true

@@ -3,7 +3,7 @@ import {BlogInputModel, BlogViewModel, PaginatorBlogViewModel, TypePostForBlogHa
 import { BlogPostInputModel, BlgId } from "../input-output-types/eny-type";
 import { PaginatorPostViewModel, PostViewModel } from "../input-output-types/posts-type";
 import { TypeBlogHalper } from "../input-output-types/blogs-type";
-import { BlogSessions } from "./blogSessions";
+import { BlogService } from "./blogService";
 import { BlogQueryRepository } from "./blogQueryRepository";
 
 export class BlogController {
@@ -12,14 +12,13 @@ export class BlogController {
         res: Response<BlogViewModel>
     ) => {
         try {
-            const createResult = await BlogSessions.createBlog(req.body)
+            const createResult = await BlogService.createBlog(req.body)
             if (!createResult) {
                 res.sendStatus(404)
                 return;
                 };
             const newBlog = await BlogQueryRepository.getBlogById(createResult)
             if(newBlog) {
-                // console.log(newBlog)
                 res.status(201).json(newBlog);
             } else {
                 res.sendStatus(500)
@@ -35,12 +34,12 @@ export class BlogController {
         res: Response<PostViewModel>
     ) => {
         try {
-            const findBlog = await BlogSessions.findBlogById(req.params.id)
+            const findBlog = await BlogService.findBlogById(req.params.id)
             if (!findBlog) {
                 res.sendStatus(404);
                 return;
             }
-            const createResult = await BlogSessions.createPostForBlog(req.params.id, req.body, findBlog.name)
+            const createResult = await BlogService.createPostForBlog(req.params.id, req.body, findBlog.name)
             const newPostForBlog = await BlogQueryRepository.getPostForBlogById(createResult)
             if(newPostForBlog) {
                 res.status(201).json(newPostForBlog)
@@ -101,12 +100,12 @@ export class BlogController {
         res: Response
     ) => {
         try {
-            const findBlog = await BlogSessions.findBlogById(req.params.id)
+            const findBlog = await BlogService.findBlogById(req.params.id)
             if(!findBlog) {
                 res.sendStatus(404)
                 return
             }
-            const updateBlogResult = await BlogSessions.updateBlog(req.params.id, req.body)
+            const updateBlogResult = await BlogService.updateBlog(req.params.id, req.body)
             if(updateBlogResult) {
                 res.sendStatus(204)
             }
@@ -121,7 +120,7 @@ export class BlogController {
         res: Response
     ) => {
         try {
-            const deleteResult = await BlogSessions.deleteBlog(req.params.id)
+            const deleteResult = await BlogService.deleteBlog(req.params.id)
             if(deleteResult) {
                 res.sendStatus(204)
             } else {
