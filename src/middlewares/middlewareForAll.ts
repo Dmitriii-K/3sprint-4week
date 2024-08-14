@@ -336,7 +336,7 @@ export const bearerAuth = async (req: Request, res: Response, next: NextFunction
 if(!req.headers.authorization) {
     res.status(401).json({});
     return;
-  };
+  }
   const token = req.headers.authorization.split(" ")[1];
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
@@ -355,7 +355,7 @@ if(!req.headers.authorization) {
 export const softBearerAuth = async (req: Request<any, any, any, any>, res: Response, next: NextFunction) => {
   if(!req.headers.authorization) {
       return next();
-    };
+    }
     const token = req.headers.authorization.split(" ")[1];
     const payload = jwtService.getUserIdByToken(token);
     if(!payload) return next();
@@ -374,7 +374,7 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   if(!req.cookies.refreshToken) {
     res.sendStatus(401);
     return
-  };
+  }
   const token = req.cookies.refreshToken;
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);

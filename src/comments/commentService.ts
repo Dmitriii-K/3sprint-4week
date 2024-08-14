@@ -1,11 +1,11 @@
 import { WithId } from "mongodb";
 import { CommentViewModel, LikesType, likeStatus } from "../input-output-types/comments-type";
 import { UserDBModel } from "../input-output-types/users-type";
-import { CommetRepository } from "./commentRepository";
+import { CommentRepository } from "./commentRepository";
 
 export class CommentService {
     static async findUserByComment (id: string) {
-        const user = await CommetRepository.findUserByComment(id)
+        const user = await CommentRepository.findUserByComment(id)
         if(!user) {
             return null
         } else {
@@ -13,7 +13,7 @@ export class CommentService {
         }
     }
     static async updateComment (id: string, content: string) {
-        const updateResult = await CommetRepository.updateComment(id, content);
+        const updateResult = await CommentRepository.updateComment(id, content);
         if(updateResult) {
             return updateResult
         } else {
@@ -21,7 +21,7 @@ export class CommentService {
         }
     }
     static async likeStatus(user: WithId<UserDBModel>, data: likeStatus, comment: CommentViewModel) {
-        const existLike = await CommetRepository.findLike(comment.id, user._id.toString())
+        const existLike = await CommentRepository.findLike(comment.id, user._id.toString())
         if(!existLike){
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
@@ -36,8 +36,8 @@ export class CommentService {
             } else if (data === likeStatus.Dislike) {
                 comment.likesInfo.dislikesCount++
             }
-            await CommetRepository.insertLike(newLike)
-            await CommetRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
+            await CommentRepository.insertLike(newLike)
+            await CommentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
             return true
         } else{
             if (existLike.status !== data) {
@@ -58,15 +58,15 @@ export class CommentService {
                     comment.likesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                await CommetRepository.updateLikeStatus(comment.id, existLike.status);
-                await CommetRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
+                await CommentRepository.updateLikeStatus(comment.id, existLike.status);
+                await CommentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
                 return true
             }
         }
         return false
     }
     static async deleteComment (id: string) {
-        const deleteResult = await CommetRepository.deleteComment(id);
+        const deleteResult = await CommentRepository.deleteComment(id);
         if (deleteResult) {
             return true;
         } else {

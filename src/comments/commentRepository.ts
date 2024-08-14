@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { CommentModel, LikesModel } from "../db/schema-model-db";
 import { LikesType } from "../input-output-types/comments-type";
 
-export class CommetRepository {
+export class CommentRepository {
     static async updateComment (id : string, content : string) {
         const mongoId = new ObjectId(id);
         const updateComment = await CommentModel.updateOne({ _id: mongoId },{$set: {content}});

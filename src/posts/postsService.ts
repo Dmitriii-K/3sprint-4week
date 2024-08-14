@@ -3,7 +3,7 @@ import { CommentDBType, CommentInputModel, LikesType, likeStatus } from "../inpu
 import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { UserDBModel } from "../input-output-types/users-type";
 import { PostRepository } from "./postsRepository";
-import { CommetRepository } from "../comments/commentRepository";
+import { CommentRepository } from "../comments/commentRepository";
 
 export class PostService {
     static async createPost (data: PostInputModel, id: string) {
@@ -43,7 +43,7 @@ export class PostService {
         return PostRepository.insertComment(newComment)
     }
     static async updatePostLike(user: WithId<UserDBModel>, data: likeStatus, post: WithId<PostDbType>) {
-        const existLike = await CommetRepository.findLike( post._id.toString(), user._id.toString())
+        const existLike = await CommentRepository.findLike( post._id.toString(), user._id.toString())
         if(!existLike){
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
@@ -58,7 +58,7 @@ export class PostService {
             } else if (data === likeStatus.Dislike) {
                 post.extendedLikesInfo.dislikesCount++
             }
-            await CommetRepository.insertLike(newLike)
+            await CommentRepository.insertLike(newLike)
             await PostRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
             return true
         } else{
@@ -80,7 +80,7 @@ export class PostService {
                     post.extendedLikesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                await CommetRepository.updateLikeStatus(post._id.toString(), existLike.status);
+                await CommentRepository.updateLikeStatus(post._id.toString(), existLike.status);
                 await PostRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
                 return true
             }

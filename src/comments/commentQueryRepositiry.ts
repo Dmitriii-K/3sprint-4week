@@ -2,7 +2,7 @@ import { ObjectId, WithId } from "mongodb";
 // import { commentCollection } from "../db/mongo-db";
 import { CommentDBType, CommentViewModel, likeStatus } from "../input-output-types/comments-type";
 import { CommentModel } from "../db/schema-model-db";
-import { CommetRepository } from "./commentRepository";
+import { CommentRepository } from "./commentRepository";
 
 export class CommentQueryRepository {
     static async findCommentById (commentId: string , userId: string | null) {
@@ -10,10 +10,10 @@ export class CommentQueryRepository {
         const comment = await CommentModel.findOne({_id: mongoCommentId});
         if (!comment) {
             return null;
-        };
+        }
         let like 
         if(userId){
-            like = await CommetRepository.findLike(commentId , userId);
+            like = await CommentRepository.findLike(commentId , userId);
         } 
         const userLikeStatus = like ? like.status : likeStatus.None;
         return CommentQueryRepository.mapComment(comment, userLikeStatus);

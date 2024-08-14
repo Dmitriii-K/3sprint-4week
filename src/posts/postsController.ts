@@ -22,7 +22,7 @@ export class PostController {
             if (!createResult) {
                 res.sendStatus(404)
                 return;
-            };
+            }
             const newPost = await PostQueryRepository.findPostById(createResult, userId);
             if(newPost)
                 res.status(201).json(newPost);
@@ -37,7 +37,7 @@ export class PostController {
             if (!createResult) {
                 res.sendStatus(404)
                 return;
-            };
+            }
             const newComment = await PostQueryRepository.findCommentById(createResult);
                 if(newComment)
                     res.status(201).json(newComment);
@@ -96,7 +96,7 @@ export class PostController {
             if(!post) {
                 res.sendStatus(404);
                 return;
-            };
+            }
             const result = await PostService.updatePostLike(user, req.body.likeStatus, post);
             if(result) {
                 res.sendStatus(204)

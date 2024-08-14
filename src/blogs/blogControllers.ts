@@ -16,7 +16,7 @@ export class BlogController {
             if (!createResult) {
                 res.sendStatus(404)
                 return;
-                };
+                }
             const newBlog = await BlogQueryRepository.getBlogById(createResult)
             if(newBlog) {
                 res.status(201).json(newBlog);

@@ -20,7 +20,7 @@ export class UserController {
             res.status(400).json({ errorsMessages: [{ message: 'email and login should be unique', field: 'email and login',}]
             });
             return;
-        };
+        }
         const newUserDB = await UserQueryRepository.findUserById(createResult);
         res.status(201).json(newUserDB!);
         } catch (error) {

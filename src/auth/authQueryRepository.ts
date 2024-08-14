@@ -10,7 +10,7 @@ export class AuthMe {
         console.log(userMe);
         if(!userMe) {
             return null;
-        };
+        }
         return {email: userMe!.email, login: userMe!.login, userId: userMe!._id.toString()}
     }
 }

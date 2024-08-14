@@ -31,7 +31,7 @@ export class AuthController {
           res.status(401).json({ errorsMessages: [{field: 'password and login', message: 'password or login is wrong'}] });
           return
         }
-    };
+    }
     } catch (error) {
       console.log(error);
       res.sendStatus(505);
@@ -110,7 +110,7 @@ export class AuthController {
       if (emailResending) {
         res.sendStatus(204);
       } else {
-        res.status(400).json({ errorsMessages: [{ message: 'eanother error', field: 'email',}]
+        res.status(400).json({ errorsMessages: [{ message: 'other error', field: 'email',}]
         });
       }
     } catch (error) {
@@ -145,6 +145,4 @@ export class AuthController {
         console.log(error);
     }
   }
-};
-
-
+}

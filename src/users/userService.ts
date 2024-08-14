@@ -7,7 +7,7 @@ export class UserService {
         const userExist = await UserRepository.findUserByLogiOrEmail({login: data.login, email: data.email});
         if (userExist) {
             return false;
-        };
+        }
         const userPassword = await bcryptService.createHashPassword(data.password);
 
         const createDate = new Date().toISOString();

@@ -11,7 +11,7 @@ import { NewPasswordRecoveryInputModel } from "../input-output-types/auth-type";
 
 export const authService = {
     async checkCredentials(loginOrEmail: string) {
-        const user = await AuthRepository.findUserByLogiOrEmail(loginOrEmail);
+        const user = await AuthRepository.findUserByLoginOrEmail(loginOrEmail);
         if(user) {
             return user;
         } else {
@@ -45,7 +45,6 @@ export const authService = {
         };
         await AuthRepository.createUser(newUser); // сохранить юзера в базе данных
         await sendMailService.sendMail(newUser.email ,newUser.emailConfirmation.confirmationCode);
-        // console.log(newUser);
         return newUser;
     },
     async confirmEmail(code: string) {
@@ -55,7 +54,6 @@ export const authService = {
         if(user.emailConfirmation.confirmationCode !== code ) return false;
         if(user.emailConfirmation.expirationDate < new Date().toISOString()) return false;
             const result = await AuthRepository.updateConfirmation(user._id)
-            // console.log(result);
             return result;
     },
     async resendEmail(mail: string) {
@@ -67,7 +65,6 @@ export const authService = {
         AuthRepository.updateCode(user._id.toString(), newCode),
         await sendMailService.sendMail(mail, newCode)
         ])
-        // console.log(result);
         return true;
     },
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
@@ -115,7 +112,7 @@ export const authService = {
             if(!user)return false; // Пользователь не найден
         // Генерируем код восстановления
         const recoveryCode = randomUUID();
-            AuthRepository.updateCode(user._id.toString(), recoveryCode),
+            await AuthRepository.updateCode(user._id.toString(), recoveryCode)
             await passwordRecovery.sendMail(mail, recoveryCode)
         return true;
     }

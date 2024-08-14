@@ -4,7 +4,7 @@ import { NewestLikesType, PostDbType, PostViewModel, TypePostHalper } from "../i
 // import { commentCollection, postCollection } from "../db/mongo-db";
 import { halper, commentsPagination } from "../middlewares/middlewareForAll";
 import { CommentModel, PostModel } from "../db/schema-model-db";
-import { CommetRepository } from "../comments/commentRepository";
+import { CommentRepository } from "../comments/commentRepository";
 import { CommentQueryRepository } from "../comments/commentQueryRepositiry";
 import { UserDBModel } from "../input-output-types/users-type";
 
@@ -22,9 +22,9 @@ export class PostQueryRepository {
         const items = await Promise.all(posts.map(async post => {
             let like;
             if (user) {
-                like = await CommetRepository.findLike(post._id.toString(), user._id.toString());
+                like = await CommentRepository.findLike(post._id.toString(), user._id.toString());
             }
-            const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
+            const allLikes = await CommentRepository.findAllLikesForPost(post._id.toString());
             const userLikeStatus = like ? like.status : likeStatus.None;
             return PostQueryRepository.mapPost(post, userLikeStatus, allLikes);
         }));
@@ -42,12 +42,12 @@ export class PostQueryRepository {
         const post = await PostModel.findOne({_id: mongoId});
         if (!post) {
             return null;
-        };
+        }
         let like 
         if(userId){
-            like = await CommetRepository.findLike(postId , userId);
+            like = await CommentRepository.findLike(postId , userId);
         } 
-        const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
+        const allLikes = await CommentRepository.findAllLikesForPost(post._id.toString());
         const userLikeStatus = like ? like.status : likeStatus.None;
         return PostQueryRepository.mapPost(post, userLikeStatus, allLikes);
     }
@@ -56,7 +56,7 @@ export class PostQueryRepository {
         const comment = await CommentModel.findOne({_id: mongoId});
         if (!comment) {
             return null;
-        };
+        }
         return PostQueryRepository.mapComment(comment);
     }
     static async findCommentByPost (helper: TypePostHalper, id: string, userId: string | null) {
@@ -73,7 +73,7 @@ export class PostQueryRepository {
             const items = await Promise.all(comments.map( async comment => {
                 let like 
                 if(userId){
-                    like = await CommetRepository.findLike(comment._id.toString() , userId);
+                    like = await CommentRepository.findLike(comment._id.toString() , userId);
                 } 
                 const userLikeStatus = like ? like.status : likeStatus.None;
                 return CommentQueryRepository.mapComment(comment, userLikeStatus);
@@ -89,7 +89,7 @@ export class PostQueryRepository {
             };
             
     }
-    static mapPost(post: WithId<PostDbType>, userLikeStatus?: likeStatus, allLikes?: LikesType[], user?: WithId<UserDBModel> | null): PostViewModel {
+    static mapPost(post: WithId<PostDbType>, userLikeStatus?: likeStatus, allLikes?: LikesType[]): PostViewModel {
         const newestLikes: NewestLikesType[] = [];
     
         if (allLikes) {

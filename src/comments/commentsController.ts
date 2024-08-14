@@ -11,7 +11,7 @@ export class CommentsController {
         const comment = await CommentQueryRepository.findCommentById(req.params.id , userId);
         if(comment) {
             return res.status(200).json(comment)
-        };
+        }
         return res.sendStatus(404);
         } catch (error) {
             console.log(error);
@@ -46,7 +46,7 @@ export class CommentsController {
             if(!comment) {
                 res.sendStatus(404);
                 return;
-            };
+            }
             const result = await CommentService.likeStatus(user, req.body.likeStatus, comment);
             if(result) {
                 res.sendStatus(204)

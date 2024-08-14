@@ -10,7 +10,7 @@ export class UserQueryRepository {
         const user = await UserModel.findOne({_id: mongoId});
         if (!user) {
             return null;
-        };
+        }
         return UserQueryRepository.mapUser(user);
     }
     static async findUserByMiddleware (id: string) {
@@ -18,7 +18,7 @@ export class UserQueryRepository {
         const user = await UserModel.findOne({_id: mongoId});
         if (!user) {
             return null;
-        };
+        }
         return user
     }
     static async findUsers(sortData: TypeUserPagination) {

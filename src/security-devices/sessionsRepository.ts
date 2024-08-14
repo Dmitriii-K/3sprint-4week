@@ -9,8 +9,8 @@ export class SessionsRepository {
 
     }
     static async deleteAllSessionsExceptCurrentOne (userId: string, device_id: string) {
-        const deleteAlldevices = await SessionModel.deleteMany({user_id: userId, device_id: {$ne: device_id}});
-        return deleteAlldevices.deletedCount === 1
+        const deleteAllDevices = await SessionModel.deleteMany({user_id: userId, device_id: {$ne: device_id}});
+        return deleteAllDevices.deletedCount === 1
     }
     static async findUserByDeviceId (deviceId: string) {
         const user = await SessionModel.findOne({device_id: deviceId});

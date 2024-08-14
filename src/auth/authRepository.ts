@@ -16,7 +16,7 @@ export class AuthRepository {
     static async checkUserByRegistration (login: string, email: string) {
         return UserModel.findOne({ $or: [{ login: login }, { email: email }] });
     }
-    static async findUserByLogiOrEmail (loginOrEmail: string) {
+    static async findUserByLoginOrEmail (loginOrEmail: string) {
         return UserModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
     }
     static async createUser (user: UserDBModel) {
@@ -29,9 +29,9 @@ export class AuthRepository {
     static async findUserByEmail (mail: string) {
         return UserModel.findOne({email: mail});
     }
-    static async resendMail (mail: string) {
-        return UserModel.findOne({email: mail});
-    }
+    // static async resendMail (mail: string) {
+    //     return UserModel.findOne({email: mail});
+    // }
     static async updateConfirmation (_id: ObjectId) {
         const result = await UserModel.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
         return result.modifiedCount === 1;

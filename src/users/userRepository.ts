@@ -13,7 +13,7 @@ export class UserRepository {
         const user = await UserModel.findOne({_id: mongoId});
         if (!user) {
             return null;
-        };
+        }
         return user
     }
     static async findUserByLogiOrEmail (data: {login: string, email:string}) {
@@ -24,7 +24,7 @@ export class UserRepository {
         const user = await UserModel.deleteOne({_id: mongoId});
         if (user.deletedCount === 1) {
             return true;
-        };
+        }
         return false;
     }
 }

@@ -6,7 +6,7 @@ import { PostQueryRepository } from "../posts/postsQueryRepository";
 import { halper } from "../middlewares/middlewareForAll";
 import { PostDbType } from "../input-output-types/posts-type";
 import { likeStatus } from "../input-output-types/comments-type";
-import { CommetRepository } from "../comments/commentRepository";
+import { CommentRepository } from "../comments/commentRepository";
 
 export class BlogQueryRepository {
     static async getAllBlogs (helper: TypeBlogHalper) {
@@ -35,7 +35,7 @@ export class BlogQueryRepository {
         const blog =  await BlogModel.findOne({_id: mongoId});
         if (!blog) {
             return null;
-        };
+        }
         return BlogQueryRepository.blogMap(blog);
     }
     static async getPostForBlogById (id: string) {
@@ -43,7 +43,7 @@ export class BlogQueryRepository {
         const post =  await PostModel.findOne({_id: mongoId});
         if (!post) {
             return null;
-        };
+        }
         return PostQueryRepository.mapPost(post)
     }
     static async getPostFofBlog (helper: TypePostForBlogHalper, id: string, userId: string | null) {
@@ -59,9 +59,9 @@ export class BlogQueryRepository {
         const items = await Promise.all(posts.map( async post => {
             let like 
             if(userId){
-                like = await CommetRepository.findLike(post._id.toString() , userId);
+                like = await CommentRepository.findLike(post._id.toString() , userId);
             } 
-            const allLikes = await CommetRepository.findAllLikesForPost(post._id.toString());
+            const allLikes = await CommentRepository.findAllLikesForPost(post._id.toString());
             const userLikeStatus = like ? like.status : likeStatus.None;
             return PostQueryRepository.mapPost(post, userLikeStatus, allLikes);
         })
@@ -85,4 +85,4 @@ export class BlogQueryRepository {
         isMembership: blog.isMembership,
         };
     }
-};
+}
