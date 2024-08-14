@@ -1,11 +1,11 @@
-import { app } from "../src/app";
+import { app } from "../../src/app";
 import { agent } from "supertest";
 export const req = agent(app);
 
 import mongoose from "mongoose";
-import { SETTINGS } from "./../src/settings";
-import { codedAuth } from "./../src/middlewares/middlewareForAll";
-import { BlogModel} from "./../src/db/schema-model-db";
+import { SETTINGS } from "../../src/settings";
+import { codedAuth } from "../../src/middlewares/middlewareForAll";
+import { BlogModel} from "../../src/db/schema-model-db";
 
 describe('BlogController', () => {
 
