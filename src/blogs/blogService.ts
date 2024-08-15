@@ -4,7 +4,13 @@ import { PostDbType } from "../input-output-types/posts-type";
 import { BlogRepository } from "./blogRepository";
 
 export class BlogService {
-    static async createBlog (data: BlogInputModel) {
+    private blogRepository: BlogRepository;
+
+    constructor(blogRepository: BlogRepository) {
+        this.blogRepository = blogRepository;
+    }
+
+    async createBlog(data: BlogInputModel) {
         const createDate = new Date().toISOString();
         const newBlog: BlogDbType = {
             name: data.name,
@@ -13,9 +19,10 @@ export class BlogService {
             createdAt: createDate,
             isMembership: false,
         };
-        return BlogRepository.insertBlog(newBlog);
+        return this.blogRepository.insertBlog(newBlog);
     }
-    static async createPostForBlog (blogId: string, data: BlogPostInputModel, name: string) {
+
+    async createPostForBlog(blogId: string, data: BlogPostInputModel, name: string) {
         const createDate = new Date().toISOString();
         const newPost: PostDbType = {
             title: data.title,
@@ -30,26 +37,29 @@ export class BlogService {
                 newestLikes: []
             }
         };
-        return BlogRepository.insertPostForBlog(newPost)
+        return this.blogRepository.insertPostForBlog(newPost);
     }
-    static async findBlogById (id: string) {
-        const blog = await BlogRepository.findBlogById(id)
-        if(!blog) {
-            return null
+
+    async findBlogById(id: string) {
+        const blog = await this.blogRepository.findBlogById(id);
+        if (!blog) {
+            return null;
         } else {
-            return blog
+            return blog;
         }
     }
-    static async updateBlog (id: string, updateContent: BlogInputModel) {
-        const updateResult = await BlogRepository.updateBlog(id, updateContent)
-        if(updateResult) {
-            return updateResult
+
+    async updateBlog(id: string, updateContent: BlogInputModel) {
+        const updateResult = await this.blogRepository.updateBlog(id, updateContent);
+        if (updateResult) {
+            return updateResult;
         } else {
-            return false
+            return false;
         }
     }
-    static async deleteBlog (id: string) {
-        const deleteResult = await BlogRepository.deleteBlog(id)
+
+    async deleteBlog(id: string) {
+        const deleteResult = await this.blogRepository.deleteBlog(id);
         if (deleteResult) {
             return true;
         } else {

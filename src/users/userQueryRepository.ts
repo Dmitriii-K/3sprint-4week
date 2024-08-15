@@ -5,32 +5,24 @@ import { userPagination } from "../middlewares/middlewareForAll";
 import { UserModel } from "../db/schema-model-db";
 
 export class UserQueryRepository {
-    static async findUserById (id: string) {
+    async findUserById(id: string) {
         const mongoId = new ObjectId(id);
-        const user = await UserModel.findOne({_id: mongoId});
+        const user = await UserModel.findOne({ _id: mongoId });
         if (!user) {
             return null;
         }
-        return UserQueryRepository.mapUser(user);
+        return this.mapUser(user);
     }
-    static async findUserByMiddleware (id: string) {
-        const mongoId = new ObjectId(id);
-        const user = await UserModel.findOne({_id: mongoId});
-        if (!user) {
-            return null;
-        }
-        return user
-    }
-    static async findUsers(sortData: TypeUserPagination) {
+    async findUsers(sortData: TypeUserPagination) {
         const queryParams = userPagination(sortData);
         const searchEmail = sortData.searchEmailTerm
-        ? { email: { $regex: sortData.searchEmailTerm, $options: "i" } }
-        : {};
+            ? { email: { $regex: sortData.searchEmailTerm, $options: "i" } }
+            : {};
         const searchLogin = sortData.searchLoginTerm
-        ? { login: { $regex: sortData.searchLoginTerm, $options: "i" } }
-        : {};
+            ? { login: { $regex: sortData.searchLoginTerm, $options: "i" } }
+            : {};
 
-        const filter = { $or: [searchLogin, searchEmail]}
+        const filter = { $or: [searchLogin, searchEmail] };
         const items: WithId<UserDBModel>[] = await UserModel
             .find(filter)
             .sort({ [queryParams.sortBy]: queryParams.sortDirection })
@@ -43,11 +35,12 @@ export class UserQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount,
-            items: items.map(UserQueryRepository.mapUser),
+            items: items.map(this.mapUser),
         };
         return newUser;
     }
-    static mapUser (user: WithId<UserDBModel>): UserViewModel {
+
+    mapUser(user: WithId<UserDBModel>): UserViewModel {
         return {
             id: user._id.toString(),
             login: user.login,

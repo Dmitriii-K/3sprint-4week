@@ -1,19 +1,29 @@
 import { Router } from "express";
 import { UserController } from "./userController";
+import { UserService } from "./userService";
+import { UserRepository } from "./userRepository";
+import { UserQueryRepository } from "./userQueryRepository";
+import { BcryptService } from "../adapters/bcrypt";
 import {
-  userInputValidation,
-  inputCheckErrorsMiddleware,
+    userInputValidation,
+    inputCheckErrorsMiddleware,
+    authMiddleware,
 } from "../middlewares/middlewareForAll";
-import { authMiddleware } from "../middlewares/middlewareForAll";
 
 export const usersRouter = Router();
 
-usersRouter.get("/", authMiddleware, UserController.getUsers);
+const userRepository = new UserRepository();
+const bcryptService = new BcryptService();
+const userService = new UserService(userRepository, bcryptService);
+const userQueryRepository = new UserQueryRepository();
+const userController = new UserController(userService, userQueryRepository);
+
+usersRouter.get("/", authMiddleware, userController.getUsers.bind(userController));
 usersRouter.post(
-  "/",
-  authMiddleware,
-  userInputValidation,
-  inputCheckErrorsMiddleware,
-  UserController.createUser
+    "/",
+    authMiddleware,
+    userInputValidation,
+    inputCheckErrorsMiddleware,
+    userController.createUser.bind(userController)
 );
-usersRouter.delete("/:id", authMiddleware, UserController.deleteUser);
+usersRouter.delete("/:id", authMiddleware, userController.deleteUser.bind(userController));

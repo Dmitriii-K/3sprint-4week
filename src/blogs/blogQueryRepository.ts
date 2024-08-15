@@ -1,6 +1,5 @@
 import { ObjectId, WithId } from "mongodb";
 import { BlogDbType, BlogViewModel, TypeBlogHalper, TypePostForBlogHalper } from "../input-output-types/blogs-type";
-// import { blogCollection, postCollection } from "../db/mongo-db";
 import { BlogModel, PostModel } from "../db/schema-model-db";
 import { PostQueryRepository } from "../posts/postsQueryRepository";
 import { halper } from "../middlewares/middlewareForAll";
@@ -9,11 +8,19 @@ import { likeStatus } from "../input-output-types/comments-type";
 import { CommentRepository } from "../comments/commentRepository";
 
 export class BlogQueryRepository {
-    static async getAllBlogs (helper: TypeBlogHalper) {
+    private commentRepository: CommentRepository;
+    private postQueryRepository: PostQueryRepository;
+
+    constructor(commentRepository: CommentRepository, postQueryRepository: PostQueryRepository) {
+        this.commentRepository = commentRepository;
+        this.postQueryRepository = postQueryRepository;
+    }
+
+    async getAllBlogs(helper: TypeBlogHalper) {
         const queryParams = halper(helper);
         const search = helper.searchNameTerm
-        ? { name: { $regex: helper.searchNameTerm, $options: "i" } }
-        : {};
+            ? { name: { $regex: helper.searchNameTerm, $options: "i" } }
+            : {};
         const items: WithId<BlogDbType>[] = await BlogModel
             .find(search)
             .sort({ [queryParams.sortBy]: queryParams.sortDirection })
@@ -28,25 +35,28 @@ export class BlogQueryRepository {
             totalCount,
             items: items.map(BlogQueryRepository.blogMap),
         };
-        return blogs
+        return blogs;
     }
-    static async getBlogById (id: string) {
-        const mongoId = new ObjectId(id)
-        const blog =  await BlogModel.findOne({_id: mongoId});
+
+    async getBlogById(id: string) {
+        const mongoId = new ObjectId(id);
+        const blog = await BlogModel.findOne({ _id: mongoId });
         if (!blog) {
             return null;
         }
         return BlogQueryRepository.blogMap(blog);
     }
-    static async getPostForBlogById (id: string) {
-        const mongoId = new ObjectId(id)
-        const post =  await PostModel.findOne({_id: mongoId});
+
+    async getPostForBlogById(id: string) {
+        const mongoId = new ObjectId(id);
+        const post = await PostModel.findOne({ _id: mongoId });
         if (!post) {
             return null;
         }
-        return PostQueryRepository.mapPost(post)
+        return this.postQueryRepository.mapPost(post);
     }
-    static async getPostFofBlog (helper: TypePostForBlogHalper, id: string, userId: string | null) {
+
+    async getPostFofBlog(helper: TypePostForBlogHalper, id: string, userId: string | null) {
         const queryParams = halper(helper);
         const posts: WithId<PostDbType>[] = await PostModel
             .find({ blogId: id })
@@ -56,16 +66,15 @@ export class BlogQueryRepository {
             .exec();
         const totalCount = await PostModel.countDocuments({ blogId: id });
 
-        const items = await Promise.all(posts.map( async post => {
-            let like 
-            if(userId){
-                like = await CommentRepository.findLike(post._id.toString() , userId);
-            } 
-            const allLikes = await CommentRepository.findAllLikesForPost(post._id.toString());
+        const items = await Promise.all(posts.map(async post => {
+            let like;
+            if (userId) {
+                like = await this.commentRepository.findLike(post._id.toString(), userId);
+            }
+            const allLikes = await this.commentRepository.findAllLikesForPost(post._id.toString());
             const userLikeStatus = like ? like.status : likeStatus.None;
-            return PostQueryRepository.mapPost(post, userLikeStatus, allLikes);
-        })
-        )
+            return this.postQueryRepository.mapPost(post, userLikeStatus, allLikes);
+        }));
 
         return {
             pagesCount: Math.ceil(totalCount / queryParams.pageSize),
@@ -73,16 +82,17 @@ export class BlogQueryRepository {
             pageSize: queryParams.pageSize,
             totalCount,
             items,
-            };
+        };
     }
-    static blogMap (blog: WithId<BlogDbType>): BlogViewModel {
+
+    static blogMap(blog: WithId<BlogDbType>): BlogViewModel {
         return {
-        id: blog._id.toString(),
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-        createdAt: blog.createdAt,
-        isMembership: blog.isMembership,
+            id: blog._id.toString(),
+            name: blog.name,
+            description: blog.description,
+            websiteUrl: blog.websiteUrl,
+            createdAt: blog.createdAt,
+            isMembership: blog.isMembership,
         };
     }
 }

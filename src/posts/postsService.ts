@@ -6,8 +6,16 @@ import { PostRepository } from "./postsRepository";
 import { CommentRepository } from "../comments/commentRepository";
 
 export class PostService {
-    static async createPost (data: PostInputModel, id: string) {
-        const findBlogNameForId = await PostRepository.findBlogNameForId(id)
+    private postRepository: PostRepository;
+    private commentRepository: CommentRepository;
+
+    constructor(postRepository: PostRepository, commentRepository: CommentRepository) {
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    async createPost(data: PostInputModel, id: string) {
+        const findBlogNameForId = await this.postRepository.findBlogNameForId(id);
         const createDate = new Date().toISOString();
         const newPost: PostDbType = {
             title: data.title,
@@ -22,17 +30,18 @@ export class PostService {
                 newestLikes: []
             }
         };
-        return PostRepository.insertPost(newPost);
+        return this.postRepository.insertPost(newPost);
     }
-    static async createCommentByPost (paramId: string, data: CommentInputModel, user: WithId<UserDBModel>) {
-        const post = await PostRepository.findPostById(paramId);
+
+    async createCommentByPost(paramId: string, data: CommentInputModel, user: WithId<UserDBModel>) {
+        const post = await this.postRepository.findPostById(paramId);
         const createDate = new Date().toISOString();
         const newComment: CommentDBType = {
             postId: paramId,
             content: data.content,
-            createdAt:	createDate,
-            commentatorInfo: { 
-                userId:	user._id.toString(),
+            createdAt: createDate,
+            commentatorInfo: {
+                userId: user._id.toString(),
                 userLogin: user.login,
             },
             likesInfo: {
@@ -40,11 +49,12 @@ export class PostService {
                 dislikesCount: 0
             }
         };
-        return PostRepository.insertComment(newComment)
+        return this.postRepository.insertComment(newComment);
     }
-    static async updatePostLike(user: WithId<UserDBModel>, data: likeStatus, post: WithId<PostDbType>) {
-        const existLike = await CommentRepository.findLike( post._id.toString(), user._id.toString())
-        if(!existLike){
+
+    async updatePostLike(user: WithId<UserDBModel>, data: likeStatus, post: WithId<PostDbType>) {
+        const existLike = await this.commentRepository.findLike(post._id.toString(), user._id.toString());
+        if (!existLike) {
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
                 addedAt: createDate,
@@ -52,16 +62,16 @@ export class PostService {
                 userId: user._id.toString(),
                 userIogin: user.login,
                 status: data
-            }
-            if(data === likeStatus.Like){
-                post.extendedLikesInfo.likesCount++
+            };
+            if (data === likeStatus.Like) {
+                post.extendedLikesInfo.likesCount++;
             } else if (data === likeStatus.Dislike) {
-                post.extendedLikesInfo.dislikesCount++
+                post.extendedLikesInfo.dislikesCount++;
             }
-            await CommentRepository.insertLike(newLike)
-            await PostRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
-            return true
-        } else{
+            await this.commentRepository.insertLike(newLike);
+            await this.postRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
+            return true;
+        } else {
             if (existLike.status !== data) {
                 // Обновление счетчиков лайков и дизлайков
                 if (existLike.status === likeStatus.Like && data === likeStatus.Dislike) {
@@ -80,27 +90,33 @@ export class PostService {
                     post.extendedLikesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                await CommentRepository.updateLikeStatus(post._id.toString(), existLike.status);
-                await PostRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
-                return true
+                await this.commentRepository.updateLikeStatus(post._id.toString(), existLike.status);
+                await this.postRepository.updatePostCount(post._id.toString(), post.extendedLikesInfo.likesCount, post.extendedLikesInfo.dislikesCount);
+                return true;
             }
         }
-        return false
+        return false;
     }
-    static async updatePost (data: PostInputModel, id: string) {
-        const succsesUpdate = await PostRepository.updatePost(data, id)
-        if(succsesUpdate) {
-            return succsesUpdate
+
+    async updatePost(data: PostInputModel, id: string) {
+        const succsesUpdate = await this.postRepository.updatePost(data, id);
+        if (succsesUpdate) {
+            return succsesUpdate;
         } else {
-            return false
+            return false;
         }
     }
-    static async deletePost (id: string) {
-        const result = await PostRepository.deletePost(id)
-        if(result) {
-            return true
-                } else {
-            return false
-            }
+
+    async deletePost(id: string) {
+        const result = await this.postRepository.deletePost(id);
+        if (result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async findPostById(postId: string) {
+        return this.postRepository.findPostById(postId);
     }
 }

@@ -4,25 +4,33 @@ import { UserDBModel } from "../input-output-types/users-type";
 import { CommentRepository } from "./commentRepository";
 
 export class CommentService {
-    static async findUserByComment (id: string) {
-        const user = await CommentRepository.findUserByComment(id)
-        if(!user) {
-            return null
+    private commentRepository: CommentRepository;
+
+    constructor(commentRepository: CommentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
+    async findUserByComment(id: string) {
+        const user = await this.commentRepository.findUserByComment(id);
+        if (!user) {
+            return null;
         } else {
-            return user
+            return user;
         }
     }
-    static async updateComment (id: string, content: string) {
-        const updateResult = await CommentRepository.updateComment(id, content);
-        if(updateResult) {
-            return updateResult
+
+    async updateComment(id: string, content: string) {
+        const updateResult = await this.commentRepository.updateComment(id, content);
+        if (updateResult) {
+            return updateResult;
         } else {
-            return false
+            return false;
         }
     }
-    static async likeStatus(user: WithId<UserDBModel>, data: likeStatus, comment: CommentViewModel) {
-        const existLike = await CommentRepository.findLike(comment.id, user._id.toString())
-        if(!existLike){
+
+    async likeStatus(user: WithId<UserDBModel>, data: likeStatus, comment: CommentViewModel) {
+        const existLike = await this.commentRepository.findLike(comment.id, user._id.toString());
+        if (!existLike) {
             const createDate = new Date().toISOString();
             const newLike: LikesType = {
                 addedAt: createDate,
@@ -30,16 +38,16 @@ export class CommentService {
                 userId: user._id.toString(),
                 userIogin: user.login,
                 status: data
-            }
-            if(data === likeStatus.Like){
-                comment.likesInfo.likesCount++
+            };
+            if (data === likeStatus.Like) {
+                comment.likesInfo.likesCount++;
             } else if (data === likeStatus.Dislike) {
-                comment.likesInfo.dislikesCount++
+                comment.likesInfo.dislikesCount++;
             }
-            await CommentRepository.insertLike(newLike)
-            await CommentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
-            return true
-        } else{
+            await this.commentRepository.insertLike(newLike);
+            await this.commentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
+            return true;
+        } else {
             if (existLike.status !== data) {
                 // Обновление счетчиков лайков и дизлайков
                 if (existLike.status === likeStatus.Like && data === likeStatus.Dislike) {
@@ -58,15 +66,16 @@ export class CommentService {
                     comment.likesInfo.dislikesCount++;
                 }
                 existLike.status = data;
-                await CommentRepository.updateLikeStatus(comment.id, existLike.status);
-                await CommentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
-                return true
+                await this.commentRepository.updateLikeStatus(comment.id, existLike.status);
+                await this.commentRepository.updateLikesInfo(comment.id, comment.likesInfo.likesCount, comment.likesInfo.dislikesCount);
+                return true;
             }
         }
-        return false
+        return false;
     }
-    static async deleteComment (id: string) {
-        const deleteResult = await CommentRepository.deleteComment(id);
+
+    async deleteComment(id: string) {
+        const deleteResult = await this.commentRepository.deleteComment(id);
         if (deleteResult) {
             return true;
         } else {

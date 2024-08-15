@@ -9,6 +9,8 @@ import { AuthRepository } from "../auth/authRepository";
 import { UserQueryRepository } from "../users/userQueryRepository";
 import { SessionsRepository } from "../security-devices/sessionsRepository";
 import { BlogModel } from "../db/schema-model-db";
+import { UserRepository } from "../users/userRepository";
+
 
 const urlPattern =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
@@ -333,7 +335,9 @@ const buff2 = Buffer.from(SETTINGS.ADMIN, "utf8");
 export const codedAuth = buff2.toString("base64");
 
 export const bearerAuth = async (req: Request, res: Response, next: NextFunction) => {
-if(!req.headers.authorization) {
+  const userRepository = new UserRepository();
+
+  if(!req.headers.authorization) {
     res.status(401).json({});
     return;
   }
@@ -342,7 +346,7 @@ if(!req.headers.authorization) {
   if(!payload) return res.sendStatus(401);
 
   // const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
-  const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
+  const user = await userRepository.findUserByMiddleware(payload.userId)
   if(user) {
     req.user = user;
     next();
@@ -353,14 +357,16 @@ if(!req.headers.authorization) {
 };
 
 export const softBearerAuth = async (req: Request<any, any, any, any>, res: Response, next: NextFunction) => {
-  if(!req.headers.authorization) {
+  const userRepository = new UserRepository();
+
+  if(!req.headers.authorization) { 
       return next();
     }
     const token = req.headers.authorization.split(" ")[1];
     const payload = jwtService.getUserIdByToken(token);
     if(!payload) return next();
   
-    const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
+    const user = await userRepository.findUserByMiddleware(payload.userId)
     if(user) {
       req.user = user;
       next();
@@ -371,23 +377,26 @@ export const softBearerAuth = async (req: Request<any, any, any, any>, res: Resp
   };
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
-  if(!req.cookies.refreshToken) {
-    res.sendStatus(401);
-    return
-  }
+    const sessionsRepository = new SessionsRepository();
+    const userRepository = new UserRepository(); 
+
+    if(!req.cookies.refreshToken) {
+      res.sendStatus(401);
+      return
+    }
   const token = req.cookies.refreshToken;
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
   
   // const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)});
-  const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
+  const user = await userRepository.findUserByMiddleware(payload.userId)
   if(user) {
     req.user = user;
     req.deviceId = payload.deviceId;
     const dateIat = new Date(payload.iat * 1000).toISOString();
     //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
     // const session = await sessionsCollection.findOne({device_id: req.deviceId})
-    const session = await SessionsRepository.findSessionByMiddleware(req.deviceId)
+    const session = await sessionsRepository.findSessionByMiddleware(req.deviceId)
     if(session?.iat !== dateIat) {
       res.sendStatus(401)
       return
@@ -442,6 +451,8 @@ export const commentsPagination = (query: {
 };
 
 export const countDocumentApi = async (req: Request, res: Response, next: NextFunction) => {
+  const authRepository = new AuthRepository();
+
   const currentDate = new Date();
   const tenSecondsAgo = new Date(Date.now() - 10000);
   const ip = req.ip;
@@ -454,8 +465,8 @@ export const countDocumentApi = async (req: Request, res: Response, next: NextFu
   // }
   // await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
   // const requestCount = await apiCollection.countDocuments(filterDocument);
-  const result = await AuthRepository.dataRecording(ip!, url, currentDate)
-  const requestCount = await AuthRepository.countingNumberRequests(ip!, url, tenSecondsAgo)
+  const result = await authRepository.dataRecording(ip!, url, currentDate)
+  const requestCount = await authRepository.countingNumberRequests(ip!, url, tenSecondsAgo)
   if(requestCount > 5) {
     res.sendStatus(429)
   } else {
