@@ -5,13 +5,8 @@ import { CommentQueryRepository } from "./commentQueryRepositiry";
 import { CommentService } from "./commentService";
 
 export class CommentsController {
-    private commentQueryRepository: CommentQueryRepository;
-    private commentService: CommentService;
 
-    constructor(commentQueryRepository: CommentQueryRepository, commentService: CommentService) {
-        this.commentQueryRepository = commentQueryRepository;
-        this.commentService = commentService;
-    }
+    constructor(private commentQueryRepository: CommentQueryRepository, private commentService: CommentService) {}
 
     async getComment(req: Request, res: Response<CommentViewModel>) {
         try {
@@ -26,7 +21,6 @@ export class CommentsController {
             return res.sendStatus(500);
         }
     }
-
     async updateComment(req: Request<ComId, {}, CommentInputModel>, res: Response) {
         try {
             const findUser = await this.commentService.findUserByComment(req.params.id);
@@ -48,7 +42,6 @@ export class CommentsController {
             res.sendStatus(500);
         }
     }
-
     async likeStatus(req: Request<ComId, {}, { likeStatus: likeStatus }>, res: Response) {
         try {
             const user = req.user ? req.user : null;
@@ -70,7 +63,6 @@ export class CommentsController {
             res.sendStatus(500);
         }
     }
-
     async deleteComment(req: Request, res: Response) {
         try {
             const user = await this.commentService.findUserByComment(req.params.id);

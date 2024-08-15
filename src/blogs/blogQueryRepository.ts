@@ -8,13 +8,8 @@ import { likeStatus } from "../input-output-types/comments-type";
 import { CommentRepository } from "../comments/commentRepository";
 
 export class BlogQueryRepository {
-    private commentRepository: CommentRepository;
-    private postQueryRepository: PostQueryRepository;
 
-    constructor(commentRepository: CommentRepository, postQueryRepository: PostQueryRepository) {
-        this.commentRepository = commentRepository;
-        this.postQueryRepository = postQueryRepository;
-    }
+    constructor(private commentRepository: CommentRepository, private postQueryRepository: PostQueryRepository) {}
 
     async getAllBlogs(helper: TypeBlogHalper) {
         const queryParams = halper(helper);
@@ -37,7 +32,6 @@ export class BlogQueryRepository {
         };
         return blogs;
     }
-
     async getBlogById(id: string) {
         const mongoId = new ObjectId(id);
         const blog = await BlogModel.findOne({ _id: mongoId });
@@ -46,7 +40,6 @@ export class BlogQueryRepository {
         }
         return BlogQueryRepository.blogMap(blog);
     }
-
     async getPostForBlogById(id: string) {
         const mongoId = new ObjectId(id);
         const post = await PostModel.findOne({ _id: mongoId });
@@ -55,7 +48,6 @@ export class BlogQueryRepository {
         }
         return this.postQueryRepository.mapPost(post);
     }
-
     async getPostFofBlog(helper: TypePostForBlogHalper, id: string, userId: string | null) {
         const queryParams = halper(helper);
         const posts: WithId<PostDbType>[] = await PostModel
@@ -84,7 +76,6 @@ export class BlogQueryRepository {
             items,
         };
     }
-
     static blogMap(blog: WithId<BlogDbType>): BlogViewModel {
         return {
             id: blog._id.toString(),

@@ -4,11 +4,8 @@ import { UserDBModel } from "../input-output-types/users-type";
 import { CommentRepository } from "./commentRepository";
 
 export class CommentService {
-    private commentRepository: CommentRepository;
 
-    constructor(commentRepository: CommentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    constructor(private commentRepository: CommentRepository) {}
 
     async findUserByComment(id: string) {
         const user = await this.commentRepository.findUserByComment(id);
@@ -18,7 +15,6 @@ export class CommentService {
             return user;
         }
     }
-
     async updateComment(id: string, content: string) {
         const updateResult = await this.commentRepository.updateComment(id, content);
         if (updateResult) {
@@ -27,7 +23,6 @@ export class CommentService {
             return false;
         }
     }
-
     async likeStatus(user: WithId<UserDBModel>, data: likeStatus, comment: CommentViewModel) {
         const existLike = await this.commentRepository.findLike(comment.id, user._id.toString());
         if (!existLike) {
@@ -73,7 +68,6 @@ export class CommentService {
         }
         return false;
     }
-
     async deleteComment(id: string) {
         const deleteResult = await this.commentRepository.deleteComment(id);
         if (deleteResult) {

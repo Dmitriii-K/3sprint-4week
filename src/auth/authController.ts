@@ -9,15 +9,8 @@ import { BcryptService } from "../adapters/bcrypt";
 import { AuthRepository } from "./authRepository";
 
 export class AuthController {
-    private authService: AuthService;
-    private authRepository: AuthRepository;
-    private bcryptService: BcryptService;
 
-    constructor(authService: AuthService, authRepository: AuthRepository, bcryptService: BcryptService) {
-        this.authService = authService;
-        this.authRepository = authRepository;
-        this.bcryptService = bcryptService;
-    }
+    constructor(private authService: AuthService, private authRepository: AuthRepository, private bcryptService: BcryptService) {}
 
     async authLoginUser(req: Request<{}, {}, LoginInputModel>, res: Response<LoginSuccessViewModel | OutputErrorsType>) {
         try {
@@ -43,7 +36,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authPasswordRecovery(req: Request<{}, {}, RegistrationEmailResending>, res: Response) {
         try {
             await this.authService.passwordRecovery(req.body.email);
@@ -53,7 +45,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authNewPassword(req: Request<{}, {}, NewPasswordRecoveryInputModel>, res: Response) {
         try {
             const newPassword = await this.authService.newPassword(req.body);
@@ -67,7 +58,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authRefreshToken(req: Request, res: Response) {
         try {
             const device = await this.authRepository.findSessionFromDeviceId(req.deviceId);
@@ -85,7 +75,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authRegistration(req: Request<{}, {}, UserInputModel>, res: Response) {
         try {
             const registrationResult = await this.authService.registerUser(req.body);
@@ -100,7 +89,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authRegistrationConfirmation(req: Request<{}, {}, RegistrationConfirmationCodeModel>, res: Response) {
         try {
             const result = await this.authService.confirmEmail(req.body.code);
@@ -115,7 +103,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authRegistrationEmailResending(req: Request<{}, {}, RegistrationEmailResending>, res: Response) {
         try {
             const emailResending = await this.authService.resendEmail(req.body.email);
@@ -129,7 +116,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async authLogout(req: Request, res: Response) {
         try {
             const device = await this.authRepository.findSessionFromDeviceId(req.deviceId);
@@ -147,7 +133,6 @@ export class AuthController {
             res.sendStatus(500);
         }
     }
-
     async getUserInform(req: Request, res: Response<MeViewModel>) {
         try {
             const { login, email, _id } = req.user;

@@ -8,14 +8,9 @@ import { CommentQueryRepository } from "../comments/commentQueryRepositiry";
 import { UserDBModel } from "../input-output-types/users-type";
 
 export class PostQueryRepository {
-    private commentRepository: CommentRepository;
-    private commentQueryRepository: CommentQueryRepository;
 
-    constructor(commentRepository: CommentRepository, commentQueryRepository: CommentQueryRepository) {
-        this.commentRepository = commentRepository;
-        this.commentQueryRepository = commentQueryRepository;
-    }
-
+    constructor(private commentRepository: CommentRepository, private commentQueryRepository: CommentQueryRepository) {}
+    
     async getAllPosts(helper: TypePostHalper, user: WithId<UserDBModel> | null) {
         const queryParams = halper(helper);
         const posts: WithId<PostDbType>[] = (await PostModel
@@ -44,7 +39,6 @@ export class PostQueryRepository {
             items,
         };
     }
-
     async findPostById(postId: string, userId: string | null) {
         const mongoId = new ObjectId(postId);
         const post = await PostModel.findOne({ _id: mongoId });
@@ -59,7 +53,6 @@ export class PostQueryRepository {
         const userLikeStatus = like ? like.status : likeStatus.None;
         return this.mapPost(post, userLikeStatus, allLikes);
     }
-
     async findCommentById(id: string) {
         const mongoId = new ObjectId(id);
         const comment = await CommentModel.findOne({ _id: mongoId });
@@ -68,7 +61,6 @@ export class PostQueryRepository {
         }
         return this.mapComment(comment);
     }
-
     async findCommentByPost(helper: TypePostHalper, id: string, userId: string | null) {
         const queryParams = commentsPagination(helper);
         const comments: WithId<CommentDBType>[] = await CommentModel
@@ -97,7 +89,6 @@ export class PostQueryRepository {
             items,
         };
     }
-
     mapPost(post: WithId<PostDbType>, userLikeStatus?: likeStatus, allLikes?: LikesType[]): PostViewModel {
         const newestLikes: NewestLikesType[] = [];
 
@@ -131,7 +122,6 @@ export class PostQueryRepository {
             },
         };
     }
-
     mapComment(comment: WithId<CommentDBType>, userLikeStatus?: likeStatus): CommentViewModel {
         return {
             id: comment._id.toString(),

@@ -3,13 +3,8 @@ import { UserRepository } from "./userRepository";
 import { BcryptService } from "../adapters/bcrypt";
 
 export class UserService {
-    private userRepository: UserRepository;
-    private bcryptService: BcryptService;
 
-    constructor(userRepository: UserRepository, bcryptService: BcryptService) {
-        this.userRepository = userRepository;
-        this.bcryptService = bcryptService;
-    }
+    constructor(private userRepository: UserRepository, private bcryptService: BcryptService) {}
 
     async createUser(data: UserInputModel) {
         const userExist = await this.userRepository.findUserByLogiOrEmail({ login: data.login, email: data.email });

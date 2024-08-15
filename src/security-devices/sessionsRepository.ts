@@ -6,7 +6,6 @@ export class SessionsRepository {
         const result = await SessionModel.deleteOne({ device_id: deviceId });
         return result.deletedCount === 1;
     }
-
     async deleteAllSessionsExceptCurrentOne(userId: string, device_id: string) {
         const deleteAllDevices = await SessionModel.deleteMany({ user_id: userId, device_id: { $ne: device_id } });
         return deleteAllDevices.deletedCount > 0;

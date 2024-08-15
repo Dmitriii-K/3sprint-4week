@@ -5,13 +5,8 @@ import { PostService } from "./postsService";
 import { PostQueryRepository } from "./postsQueryRepository";
 
 export class PostController {
-    private postService: PostService;
-    private postQueryRepository: PostQueryRepository;
 
-    constructor(postService: PostService, postQueryRepository: PostQueryRepository) {
-        this.postService = postService;
-        this.postQueryRepository = postQueryRepository;
-    }
+    constructor(private postService: PostService, private postQueryRepository: PostQueryRepository) {}
 
     async createPost(req: Request<{}, {}, PostInputModel>, res: Response<PostViewModel>) {
         try {
@@ -29,7 +24,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async createCommentByPostId(req: Request<PstId, {}, CommentInputModel>, res: Response<CommentDBType>) {
         try {
             const createResult = await this.postService.createCommentByPost(req.params.id, req.body, req.user);
@@ -45,7 +39,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async getPosts(req: Request<{}, {}, {}, TypePostHalper>, res: Response<PaginatorPostViewModel>) {
         try {
             const user = req.user ? req.user : null;
@@ -56,7 +49,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async getPostById(req: Request, res: Response) {
         try {
             const userId: string | null = req.user ? req.user._id.toString() : null;
@@ -72,7 +64,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async getCommentByPost(req: Request<PstId, {}, {}, TypePostHalper>, res: Response<PaginatorCommentViewModelDB>) {
         try {
             const userId: string | null = req.user ? req.user._id.toString() : null;
@@ -88,7 +79,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async updateLikeStatus(req: Request<PstId, {}, { likeStatus: likeStatus }>, res: Response) {
         try {
             const user = req.user ? req.user : null;
@@ -109,7 +99,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async updatePost(req: Request<PstId, {}, PostInputModel>, res: Response) {
         try {
             const findPost = await this.postService.findPostById(req.params.id);
@@ -126,7 +115,6 @@ export class PostController {
             res.sendStatus(500);
         }
     }
-
     async deletePost(req: Request, res: Response) {
         try {
             const deleteResult = await this.postService.deletePost(req.params.id);

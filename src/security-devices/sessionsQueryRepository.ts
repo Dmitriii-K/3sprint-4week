@@ -12,7 +12,6 @@ export class SessionsQueryRepository {
         const sessions = await SessionModel.find({ user_id: userId, exp: { $gte: currentTime } }).exec();
         return sessions.map(this.mapSession);
     }
-
     mapSession(session: WithId<SessionsType>): DeviceViewModel {
         return {
             ip: session.ip,

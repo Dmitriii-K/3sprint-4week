@@ -10,13 +10,8 @@ import { SessionsType } from "../input-output-types/sessions-types";
 import { NewPasswordRecoveryInputModel } from "../input-output-types/auth-type";
 
 export class AuthService {
-    private authRepository: AuthRepository;
-    private bcryptService: BcryptService;
 
-    constructor(authRepository: AuthRepository, bcryptService: BcryptService) {
-        this.authRepository = authRepository;
-        this.bcryptService = bcryptService;
-    }
+    constructor(private authRepository: AuthRepository, private bcryptService: BcryptService) {}
 
     async checkCredentials(loginOrEmail: string) {
         const user = await this.authRepository.findUserByLoginOrEmail(loginOrEmail);
@@ -26,7 +21,6 @@ export class AuthService {
             return null;
         }
     }
-
     async updateRefreshToken(user: WithId<UserDBModel>, deviceId: string) {
         const newPairTokens = jwtService.generateToken(user, deviceId);
         const { accessToken, refreshToken } = newPairTokens;
@@ -37,7 +31,6 @@ export class AuthService {
         await this.authRepository.updateIat(iat, deviceId);
         return { accessToken, refreshToken };
     }
-
     async registerUser(data: UserInputModel) {
         const checkUser = await this.authRepository.checkUserByRegistration(data.login, data.email);
         if (checkUser !== null) return;
@@ -57,7 +50,6 @@ export class AuthService {
         await sendMailService.sendMail(newUser.email, newUser.emailConfirmation.confirmationCode);
         return newUser;
     }
-
     async confirmEmail(code: string) {
         const user: WithId<UserDBModel> | null = await this.authRepository.findUserByCode(code);
         if (!user) return false;
@@ -67,7 +59,6 @@ export class AuthService {
         const result = await this.authRepository.updateConfirmation(user._id);
         return result;
     }
-
     async resendEmail(mail: string) {
         const user: WithId<UserDBModel> | null = await this.authRepository.findUserByEmail(mail);
         if (!user) return false;
@@ -79,7 +70,6 @@ export class AuthService {
         ]);
         return true;
     }
-
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
         const payload = jwtService.getUserIdByToken(token);
         let { iat, exp, deviceId } = payload!;
@@ -95,7 +85,6 @@ export class AuthService {
         };
         await this.authRepository.createSession(newSession);
     }
-
     async authLogoutAndDeleteSession(deviceId: string) {
         const deletedSession = await this.authRepository.deleteSession(deviceId);
         if (deletedSession) {
@@ -104,7 +93,6 @@ export class AuthService {
             return false;
         }
     }
-
     async newPassword(data: NewPasswordRecoveryInputModel): Promise<boolean> {
         // Проверяем, существует ли пользователь с таким кодом восстановления
         const user: WithId<UserDBModel> | null = await this.authRepository.findUserByCode(data.recoveryCode);
@@ -120,7 +108,6 @@ export class AuthService {
             return false;
         }
     }
-
     async passwordRecovery(mail: string): Promise<boolean> {
         // Проверяем, существует ли пользователь с таким email
         const user: WithId<UserDBModel> | null = await this.authRepository.findUserByEmail(mail);

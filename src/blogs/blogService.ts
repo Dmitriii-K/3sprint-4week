@@ -4,11 +4,8 @@ import { PostDbType } from "../input-output-types/posts-type";
 import { BlogRepository } from "./blogRepository";
 
 export class BlogService {
-    private blogRepository: BlogRepository;
 
-    constructor(blogRepository: BlogRepository) {
-        this.blogRepository = blogRepository;
-    }
+    constructor(private blogRepository: BlogRepository) {}
 
     async createBlog(data: BlogInputModel) {
         const createDate = new Date().toISOString();
@@ -21,7 +18,6 @@ export class BlogService {
         };
         return this.blogRepository.insertBlog(newBlog);
     }
-
     async createPostForBlog(blogId: string, data: BlogPostInputModel, name: string) {
         const createDate = new Date().toISOString();
         const newPost: PostDbType = {
@@ -39,7 +35,6 @@ export class BlogService {
         };
         return this.blogRepository.insertPostForBlog(newPost);
     }
-
     async findBlogById(id: string) {
         const blog = await this.blogRepository.findBlogById(id);
         if (!blog) {
@@ -48,7 +43,6 @@ export class BlogService {
             return blog;
         }
     }
-
     async updateBlog(id: string, updateContent: BlogInputModel) {
         const updateResult = await this.blogRepository.updateBlog(id, updateContent);
         if (updateResult) {
@@ -57,7 +51,6 @@ export class BlogService {
             return false;
         }
     }
-
     async deleteBlog(id: string) {
         const deleteResult = await this.blogRepository.deleteBlog(id);
         if (deleteResult) {

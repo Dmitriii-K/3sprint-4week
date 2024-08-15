@@ -4,13 +4,8 @@ import { SessionsQueryRepository } from "./sessionsQueryRepository";
 import { DeviceViewModel } from "../input-output-types/device-type";
 
 export class SessionsControllers {
-    private sessionsService: SessionsService;
-    private sessionsQueryRepository: SessionsQueryRepository;
 
-    constructor(sessionsService: SessionsService, sessionsQueryRepository: SessionsQueryRepository) {
-        this.sessionsService = sessionsService;
-        this.sessionsQueryRepository = sessionsQueryRepository;
-    }
+    constructor(private sessionsService: SessionsService, private sessionsQueryRepository: SessionsQueryRepository) {}
 
     async deleteAllSessionsExceptCurrentOne(req: Request, res: Response) {
         try {
@@ -27,7 +22,6 @@ export class SessionsControllers {
             res.sendStatus(500);
         }
     }
-
     async deleteSessionsById(req: Request, res: Response) {
         try {
             const findSession = await this.sessionsService.findUserByDeviceId(req.params.id);
@@ -53,7 +47,6 @@ export class SessionsControllers {
             res.sendStatus(500);
         }
     }
-
     async getAllSessions(req: Request, res: Response<DeviceViewModel[]>) {
         try {
             const sessions = await this.sessionsQueryRepository.findSessions(req.user._id);

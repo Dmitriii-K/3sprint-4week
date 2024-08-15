@@ -6,13 +6,8 @@ import { PostRepository } from "./postsRepository";
 import { CommentRepository } from "../comments/commentRepository";
 
 export class PostService {
-    private postRepository: PostRepository;
-    private commentRepository: CommentRepository;
 
-    constructor(postRepository: PostRepository, commentRepository: CommentRepository) {
-        this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
-    }
+    constructor(private postRepository: PostRepository, private commentRepository: CommentRepository) {}
 
     async createPost(data: PostInputModel, id: string) {
         const findBlogNameForId = await this.postRepository.findBlogNameForId(id);
@@ -32,7 +27,6 @@ export class PostService {
         };
         return this.postRepository.insertPost(newPost);
     }
-
     async createCommentByPost(paramId: string, data: CommentInputModel, user: WithId<UserDBModel>) {
         const post = await this.postRepository.findPostById(paramId);
         const createDate = new Date().toISOString();
@@ -51,7 +45,6 @@ export class PostService {
         };
         return this.postRepository.insertComment(newComment);
     }
-
     async updatePostLike(user: WithId<UserDBModel>, data: likeStatus, post: WithId<PostDbType>) {
         const existLike = await this.commentRepository.findLike(post._id.toString(), user._id.toString());
         if (!existLike) {
@@ -97,7 +90,6 @@ export class PostService {
         }
         return false;
     }
-
     async updatePost(data: PostInputModel, id: string) {
         const succsesUpdate = await this.postRepository.updatePost(data, id);
         if (succsesUpdate) {
@@ -106,7 +98,6 @@ export class PostService {
             return false;
         }
     }
-
     async deletePost(id: string) {
         const result = await this.postRepository.deletePost(id);
         if (result) {
@@ -115,7 +106,6 @@ export class PostService {
             return false;
         }
     }
-
     async findPostById(postId: string) {
         return this.postRepository.findPostById(postId);
     }

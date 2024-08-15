@@ -4,11 +4,8 @@ import { CommentModel } from "../db/schema-model-db";
 import { CommentRepository } from "./commentRepository";
 
 export class CommentQueryRepository {
-    private commentRepository: CommentRepository;
 
-    constructor(commentRepository: CommentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    constructor(private commentRepository: CommentRepository) {}
 
     async findCommentById(commentId: string, userId: string | null) {
         const mongoCommentId = new ObjectId(commentId);
@@ -23,7 +20,6 @@ export class CommentQueryRepository {
         const userLikeStatus = like ? like.status : likeStatus.None;
         return this.mapComment(comment, userLikeStatus);
     }
-
     mapComment(comment: WithId<CommentDBType>, userLikeStatus?: likeStatus): CommentViewModel {
         return {
             id: comment._id.toString(),

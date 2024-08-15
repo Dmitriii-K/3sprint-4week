@@ -5,13 +5,8 @@ import { UserService } from "./userService";
 import { UserQueryRepository } from "./userQueryRepository";
 
 export class UserController {
-    private userService: UserService;
-    private userQueryRepository: UserQueryRepository;
 
-    constructor(userService: UserService, userQueryRepository: UserQueryRepository) {
-        this.userService = userService;
-        this.userQueryRepository = userQueryRepository;
-    }
+    constructor(private userService: UserService, private userQueryRepository: UserQueryRepository) {}
 
     async createUser(req: Request<{}, {}, UserInputModel>, res: Response<UserViewModel | OutputErrorsType>) {
         try {

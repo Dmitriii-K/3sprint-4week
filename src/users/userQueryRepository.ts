@@ -39,7 +39,6 @@ export class UserQueryRepository {
         };
         return newUser;
     }
-
     mapUser(user: WithId<UserDBModel>): UserViewModel {
         return {
             id: user._id.toString(),

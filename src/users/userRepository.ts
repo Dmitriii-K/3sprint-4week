@@ -8,7 +8,6 @@ export class UserRepository {
         const saveResult = await UserModel.create(user);
         return saveResult._id.toString();
     }
-
     async findUserById(id: string) {
         const mongoId = new ObjectId(id);
         const user = await UserModel.findOne({ _id: mongoId });
@@ -28,7 +27,6 @@ export class UserRepository {
     async findUserByLogiOrEmail(data: { login: string, email: string }) {
         return UserModel.findOne({ $or: [{ login: data.login }, { email: data.email }] });
     }
-
     async deleteUser(id: string) {
         const mongoId = new ObjectId(id);
         const user = await UserModel.deleteOne({ _id: mongoId });

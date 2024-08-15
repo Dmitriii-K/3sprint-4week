@@ -7,13 +7,8 @@ import { BlogService } from "./blogService";
 import { BlogQueryRepository } from "./blogQueryRepository";
 
 export class BlogController {
-    private blogService: BlogService;
-    private blogQueryRepository: BlogQueryRepository;
 
-    constructor(blogService: BlogService, blogQueryRepository: BlogQueryRepository) {
-        this.blogService = blogService;
-        this.blogQueryRepository = blogQueryRepository;
-    }
+    constructor(private blogService: BlogService, private blogQueryRepository: BlogQueryRepository) {}
 
     async createBlog(req: Request<{}, {}, BlogInputModel>, res: Response<BlogViewModel>) {
         try {
@@ -33,7 +28,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async createPostForBlog(req: Request<BlgId, {}, BlogPostInputModel>, res: Response<PostViewModel>) {
         try {
             const findBlog = await this.blogService.findBlogById(req.params.id);
@@ -53,7 +47,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async getAllBlogs(req: Request<{}, {}, {}, TypeBlogHalper>, res: Response<PaginatorBlogViewModel>) {
         try {
             const blogs = await this.blogQueryRepository.getAllBlogs(req.query);
@@ -64,7 +57,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async getBlogById(req: Request, res: Response) {
         try {
             const blogResult = await this.blogQueryRepository.getBlogById(req.params.id);
@@ -78,7 +70,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async getPostForBlog(req: Request<BlgId, {}, {}, TypePostForBlogHalper>, res: Response<PaginatorPostViewModel>) {
         try {
             const userId: string | null = req.user ? req.user._id.toString() : null;
@@ -94,7 +85,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async updateBlog(req: Request<BlgId, {}, BlogInputModel>, res: Response) {
         try {
             const findBlog = await this.blogService.findBlogById(req.params.id);
@@ -112,7 +102,6 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-
     async deleteBlog(req: Request, res: Response) {
         try {
             const deleteResult = await this.blogService.deleteBlog(req.params.id);
