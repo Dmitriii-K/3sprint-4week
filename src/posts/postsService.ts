@@ -2,12 +2,11 @@ import { WithId } from "mongodb";
 import { CommentDBType, CommentInputModel, LikesType, likeStatus } from "../input-output-types/comments-type";
 import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { UserDBModel } from "../input-output-types/users-type";
-import { PostRepository } from "./postsRepository";
-import { CommentRepository } from "../comments/commentRepository";
+import { ICommentRepository, IPostRepository, IPostService } from "./postInterface";
 
-export class PostService {
+export class PostService implements IPostService{
 
-    constructor(private postRepository: PostRepository, private commentRepository: CommentRepository) {}
+    constructor(private postRepository: IPostRepository, private commentRepository: ICommentRepository) {}
 
     async createPost(data: PostInputModel, id: string) {
         const findBlogNameForId = await this.postRepository.findBlogNameForId(id);

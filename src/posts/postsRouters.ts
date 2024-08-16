@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { PostController } from "./postsController";
-import { commentsValidation, likeStatusValidation, softBearerAuth } from "../middlewares/middlewareForAll";
+import { softBearerAuth, authMiddleware, bearerAuth } from "../middlewares/middlewareForAll";
 import {
   postInputValidation,
   inputCheckErrorsMiddleware,
-  authMiddleware,
-  bearerAuth,
-} from "../middlewares/middlewareForAll";
+  commentsValidation,
+  likeStatusValidation
+} from "../middlewares/express-validator";
 import { PostService } from "./postsService";
 import { PostRepository } from "./postsRepository";
 import { PostQueryRepository } from "./postsQueryRepository";

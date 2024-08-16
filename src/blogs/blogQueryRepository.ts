@@ -1,15 +1,16 @@
 import { ObjectId, WithId } from "mongodb";
 import { BlogDbType, BlogViewModel, TypeBlogHalper, TypePostForBlogHalper } from "../input-output-types/blogs-type";
 import { BlogModel, PostModel } from "../db/schema-model-db";
-import { PostQueryRepository } from "../posts/postsQueryRepository";
 import { halper } from "../middlewares/middlewareForAll";
-import { PostDbType } from "../input-output-types/posts-type";
-import { likeStatus } from "../input-output-types/comments-type";
-import { CommentRepository } from "../comments/commentRepository";
+import { NewestLikesType, PostDbType, PostViewModel } from "../input-output-types/posts-type";
+import { likeStatus, LikesType } from "../input-output-types/comments-type";
+import { IBlogQueryRepository } from "./blogInterface";
+import { ICommentRepository } from "../comments/commentInterface";
+import { IPostQueryRepository } from "../posts/postInterface";
 
-export class BlogQueryRepository {
+export class BlogQueryRepository implements IBlogQueryRepository{
 
-    constructor(private commentRepository: CommentRepository, private postQueryRepository: PostQueryRepository) {}
+    constructor(private commentRepository: ICommentRepository, private postQueryRepository: IPostQueryRepository) {}
 
     async getAllBlogs(helper: TypeBlogHalper) {
         const queryParams = halper(helper);
@@ -28,7 +29,7 @@ export class BlogQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount,
-            items: items.map(BlogQueryRepository.blogMap),
+            items: items.map(this.blogMap),
         };
         return blogs;
     }
@@ -38,7 +39,7 @@ export class BlogQueryRepository {
         if (!blog) {
             return null;
         }
-        return BlogQueryRepository.blogMap(blog);
+        return this.blogMap(blog);
     }
     async getPostForBlogById(id: string) {
         const mongoId = new ObjectId(id);
@@ -76,7 +77,40 @@ export class BlogQueryRepository {
             items,
         };
     }
-    static blogMap(blog: WithId<BlogDbType>): BlogViewModel {
+    mapPost(post: WithId<PostDbType>, userLikeStatus?: likeStatus, allLikes?: LikesType[]): PostViewModel {
+        const newestLikes: NewestLikesType[] = [];
+
+        if (allLikes) {
+            // Фильтруем лайки, оставляя только те, у которых статус равен "Like"
+            const likesOnly = allLikes.filter(like => like.status === 'Like');
+            // Сортируем лайки по полю addedAt в порядке убывания
+            likesOnly.sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+            // Ограничиваем количество лайков, если нужно
+            const limitedLikes = likesOnly.slice(0, 3);
+
+            newestLikes.push(...limitedLikes.map(like => ({
+                addedAt: like.addedAt,
+                userId: like.userId,
+                login: like.userIogin
+            })));
+        }
+        return {
+            id: post._id.toString(),
+            title: post.title,
+            shortDescription: post.shortDescription,
+            content: post.content,
+            blogId: post.blogId,
+            blogName: post.blogName,
+            createdAt: post.createdAt,
+            extendedLikesInfo: {
+                likesCount: post.extendedLikesInfo.likesCount,
+                dislikesCount: post.extendedLikesInfo.dislikesCount,
+                myStatus: userLikeStatus || likeStatus.None,
+                newestLikes: newestLikes
+            },
+        };
+    }
+    blogMap(blog: WithId<BlogDbType>): BlogViewModel {
         return {
             id: blog._id.toString(),
             name: blog.name,

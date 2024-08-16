@@ -2,8 +2,9 @@ import { WithId } from "mongodb";
 import { DeviceViewModel } from "../input-output-types/device-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { SessionModel } from "../db/schema-model-db";
+import { ISessionsQueryRepository } from "./sessionsInterface";
 
-export class SessionsQueryRepository {
+export class SessionsQueryRepository implements ISessionsQueryRepository{
     async findSessions(userId: string): Promise<DeviceViewModel[] | null> {
         if (!userId) {
             throw new Error("User ID is required");

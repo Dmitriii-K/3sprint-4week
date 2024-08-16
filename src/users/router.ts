@@ -4,11 +4,8 @@ import { UserService } from "./userService";
 import { UserRepository } from "./userRepository";
 import { UserQueryRepository } from "./userQueryRepository";
 import { BcryptService } from "../adapters/bcrypt";
-import {
-    userInputValidation,
-    inputCheckErrorsMiddleware,
-    authMiddleware,
-} from "../middlewares/middlewareForAll";
+import { userInputValidation, inputCheckErrorsMiddleware } from "../middlewares/express-validator";
+import { authMiddleware } from "../middlewares/middlewareForAll";
 
 export const usersRouter = Router();
 

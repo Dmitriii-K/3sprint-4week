@@ -3,13 +3,12 @@ import { CommentDBType, CommentViewModel, likeStatus, LikesType } from "../input
 import { NewestLikesType, PostDbType, PostViewModel, TypePostHalper } from "../input-output-types/posts-type";
 import { halper, commentsPagination } from "../middlewares/middlewareForAll";
 import { CommentModel, PostModel } from "../db/schema-model-db";
-import { CommentRepository } from "../comments/commentRepository";
-import { CommentQueryRepository } from "../comments/commentQueryRepositiry";
 import { UserDBModel } from "../input-output-types/users-type";
+import { ICommentQueryRepository, ICommentRepository, IPostQueryRepository } from "./postInterface";
 
-export class PostQueryRepository {
+export class PostQueryRepository implements IPostQueryRepository {
 
-    constructor(private commentRepository: CommentRepository, private commentQueryRepository: CommentQueryRepository) {}
+    constructor(private commentRepository: ICommentRepository, private commentQueryRepository: ICommentQueryRepository) {}
     
     async getAllPosts(helper: TypePostHalper, user: WithId<UserDBModel> | null) {
         const queryParams = halper(helper);

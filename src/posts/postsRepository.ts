@@ -4,9 +4,9 @@ import { CommentDBType } from "../input-output-types/comments-type";
 import { BlogModel, CommentModel, PostModel } from "../db/schema-model-db";
 
 export class PostRepository {
-    async findBlogNameForId(id: string) {
-        const newId = new ObjectId(id);
-        return BlogModel.findOne({ _id: newId });
+    async findBlogNameForId(BlogId: string) {
+        const mongoBlogId = new ObjectId(BlogId);
+        return BlogModel.findOne({ _id: mongoBlogId });
     }
     async findPostById(postId: string) {
         const mongoPostId = new ObjectId(postId);

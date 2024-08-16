@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { SessionsService } from "./sessionsService";
-import { SessionsQueryRepository } from "./sessionsQueryRepository";
 import { DeviceViewModel } from "../input-output-types/device-type";
+import { ISessionsQueryRepository, ISessionsService } from "./sessionsInterface";
 
 export class SessionsControllers {
 
-    constructor(private sessionsService: SessionsService, private sessionsQueryRepository: SessionsQueryRepository) {}
+    constructor(private sessionsService: ISessionsService, private sessionsQueryRepository: ISessionsQueryRepository) {}
 
     async deleteAllSessionsExceptCurrentOne(req: Request, res: Response) {
         try {

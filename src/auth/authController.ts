@@ -1,16 +1,13 @@
 import { Request, Response } from "express";
 import { LoginInputModel, LoginSuccessViewModel, NewPasswordRecoveryInputModel, RegistrationConfirmationCodeModel, RegistrationEmailResending } from "../input-output-types/auth-type";
 import { OutputErrorsType } from "../input-output-types/output-errors-type";
-import { jwtService } from "../adapters/jwtToken";
 import { UserInputModel } from "../input-output-types/users-type";
 import { MeViewModel } from "../input-output-types/auth-type";
-import { AuthService } from "./authService";
-import { BcryptService } from "../adapters/bcrypt";
-import { AuthRepository } from "./authRepository";
+import { IAuthService, IAuthRepository, IBcryptService, IJwtService } from "./authInterface";
 
 export class AuthController {
 
-    constructor(private authService: AuthService, private authRepository: AuthRepository, private bcryptService: BcryptService) {}
+    constructor(private authService: IAuthService, private authRepository: IAuthRepository, private bcryptService: IBcryptService, private jwtService: IJwtService) {}
 
     async authLoginUser(req: Request<{}, {}, LoginInputModel>, res: Response<LoginSuccessViewModel | OutputErrorsType>) {
         try {
@@ -21,7 +18,7 @@ export class AuthController {
             } else {
                 const isCorrect = await this.bcryptService.comparePasswords(req.body.password, authUser?.password);
                 if (isCorrect) {
-                    const { accessToken, refreshToken } = jwtService.generateToken(authUser);
+                    const { accessToken, refreshToken } = this.jwtService.generateToken(authUser);
                     await this.authService.createSession(authUser._id.toString(), refreshToken, req.headers["user-agent"] || "unknown", req.ip || "unknown");
                     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
                         .status(200).json({ accessToken });

@@ -1,17 +1,14 @@
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { UserDBModel, UserInputModel } from "../input-output-types/users-type";
-import { BcryptService } from "../adapters/bcrypt";
-import { passwordRecovery, sendMailService } from "../adapters/sendEmail";
-import { AuthRepository } from "./authRepository";
 import { WithId } from "mongodb";
-import { jwtService } from "../adapters/jwtToken";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { NewPasswordRecoveryInputModel } from "../input-output-types/auth-type";
+import { IAuthRepository, IAuthService, IBcryptService, IEmailService, IJwtService } from "./authInterface";
 
-export class AuthService {
+export class AuthService implements IAuthService{
 
-    constructor(private authRepository: AuthRepository, private bcryptService: BcryptService) {}
+    constructor(private authRepository: IAuthRepository, private bcryptService: IBcryptService, private jwtService: IJwtService, private emailService: IEmailService) {}
 
     async checkCredentials(loginOrEmail: string) {
         const user = await this.authRepository.findUserByLoginOrEmail(loginOrEmail);
@@ -22,9 +19,9 @@ export class AuthService {
         }
     }
     async updateRefreshToken(user: WithId<UserDBModel>, deviceId: string) {
-        const newPairTokens = jwtService.generateToken(user, deviceId);
+        const newPairTokens = this.jwtService.generateToken(user, deviceId);
         const { accessToken, refreshToken } = newPairTokens;
-        const payload = jwtService.getUserIdByToken(refreshToken);
+        const payload = this.jwtService.getUserIdByToken(refreshToken);
         if (!payload) throw new Error('пейлода нет, хотя он должен быть после создания новой пары');
         let { iat } = payload;
         iat = new Date(iat * 1000).toISOString();
@@ -47,7 +44,7 @@ export class AuthService {
             }
         };
         await this.authRepository.createUser(newUser); // сохранить юзера в базе данных
-        await sendMailService.sendMail(newUser.email, newUser.emailConfirmation.confirmationCode);
+        await this.emailService.sendMail(newUser.email, newUser.emailConfirmation.confirmationCode);
         return newUser;
     }
     async confirmEmail(code: string) {
@@ -66,12 +63,12 @@ export class AuthService {
         const newCode = randomUUID();
         await Promise.all([
             this.authRepository.updateCode(user._id.toString(), newCode),
-            await sendMailService.sendMail(mail, newCode)
+            await this.emailService.sendMail(mail, newCode)
         ]);
         return true;
     }
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
-        const payload = jwtService.getUserIdByToken(token);
+        const payload = this.jwtService.getUserIdByToken(token);
         let { iat, exp, deviceId } = payload!;
         iat = new Date(iat * 1000).toISOString();
         exp = new Date(exp * 1000).toISOString();
@@ -115,7 +112,7 @@ export class AuthService {
         // Генерируем код восстановления
         const recoveryCode = randomUUID();
         await this.authRepository.updateCode(user._id.toString(), recoveryCode);
-        await passwordRecovery.sendMail(mail, recoveryCode);
+        await this.emailService.sendPasswordRecoveryMail(mail, recoveryCode);
         return true;
     }
 }

@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { BlogController } from "./blogControllers";
 import {
-    authMiddleware,
     blogInputValidation,
     blogPostValidation,
-    inputCheckErrorsMiddleware,
-    softBearerAuth,
-} from "../middlewares/middlewareForAll";
+    inputCheckErrorsMiddleware
+} from "../middlewares/express-validator";
+import { authMiddleware,  softBearerAuth } from "../middlewares/middlewareForAll";
 import { BlogService } from "./blogService";
 import { BlogRepository } from "./blogRepository";
 import { BlogQueryRepository } from "./blogQueryRepository";

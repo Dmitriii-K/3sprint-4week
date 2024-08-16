@@ -1,10 +1,9 @@
 import { UserDBModel, UserInputModel } from "../input-output-types/users-type";
-import { UserRepository } from "./userRepository";
-import { BcryptService } from "../adapters/bcrypt";
+import { IBcryptService, IUserRepository, IUserService } from "./userInterface";
 
-export class UserService {
+export class UserService implements IUserService {
 
-    constructor(private userRepository: UserRepository, private bcryptService: BcryptService) {}
+    constructor(private userRepository: IUserRepository, private bcryptService: IBcryptService) {}
 
     async createUser(data: UserInputModel) {
         const userExist = await this.userRepository.findUserByLogiOrEmail({ login: data.login, email: data.email });
@@ -27,7 +26,6 @@ export class UserService {
         };
         return this.userRepository.insertUser(newUser);
     }
-
     async deleteUser(id: string) {
         return this.userRepository.deleteUser(id);
     }

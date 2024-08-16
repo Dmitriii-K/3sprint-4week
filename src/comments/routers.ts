@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { CommentsController } from "./commentsController";
-import { commentsValidation, inputCheckErrorsMiddleware, likeStatusValidation, softBearerAuth } from "../middlewares/middlewareForAll";
+import { commentsValidation, inputCheckErrorsMiddleware, likeStatusValidation } from "../middlewares/express-validator";
+import { softBearerAuth } from "../middlewares/middlewareForAll";
 import { bearerAuth } from "../middlewares/middlewareForAll";
 import { CommentQueryRepository } from "./commentQueryRepositiry";
 import { CommentService } from "./commentService";

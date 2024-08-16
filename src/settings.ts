@@ -25,16 +25,17 @@ export const SETTINGS = {
   POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || "",
   USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || "",
   COMMENT_COLLECTION_NAME: process.env.COMMENT_COLLECTION_NAME || "",
-  // TOKENS_COLLECTION_NAME: process.env.TOKENS_COLLECTION_NAME || "",
   API_COLLECTION_NAME: process.env.API_COLLECTION_NAME || "",
-  // DEVICES_COLLECTION_NAME: process.env.DEVICES_COLLECTION_NAME || "",
   SESSIONS_COLLECTION_NAME: process.env.SESSIONS_COLLECTION_NAME || "",
   LIKES_COLLECTION_NAME: process.env.LIKES_COLLECTION_NAME || "",
-  // DB_NAME: process.env.DB_NAME || "",
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || "",
-  // REFRESH_TOKEN: process.env.REFRESH_TOKEN || "",
   PASSWORD_BY_EMAIL: process.env.PASSWORD_BY_EMAIL || ""
+};
 
+  // TOKENS_COLLECTION_NAME: process.env.TOKENS_COLLECTION_NAME || "",
+  // DEVICES_COLLECTION_NAME: process.env.DEVICES_COLLECTION_NAME || "",
+  // DB_NAME: process.env.DB_NAME || "",
+  // REFRESH_TOKEN: process.env.REFRESH_TOKEN || "",
   // ADMIN: envValidation(process.env.ADMIN) ? process.env.ADMIN : "",
   // MONGO_URL: process.env.MONGO_URL || "mongodb://0.0.0.0:27017",
   // BLOG_COLLECTION_NAME: envValidation(process.env.BLOG_COLLECTION_NAME)
@@ -44,4 +45,3 @@ export const SETTINGS = {
   //   ? process.env.POST_COLLECTION_NAME
   //   : "",
   // DB_NAME: envValidation(process.env.DB_NAME) ? process.env.DB_NAME : "",
-};

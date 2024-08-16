@@ -1,11 +1,11 @@
 import { WithId } from "mongodb";
 import { CommentViewModel, LikesType, likeStatus } from "../input-output-types/comments-type";
 import { UserDBModel } from "../input-output-types/users-type";
-import { CommentRepository } from "./commentRepository";
+import { ICommentRepository, ICommentService } from "./commentInterface";
 
-export class CommentService {
+export class CommentService implements ICommentService{
 
-    constructor(private commentRepository: CommentRepository) {}
+    constructor(private commentRepository: ICommentRepository) {}
 
     async findUserByComment(id: string) {
         const user = await this.commentRepository.findUserByComment(id);
@@ -73,7 +73,7 @@ export class CommentService {
         if (deleteResult) {
             return true;
         } else {
-            return null;
+            return false;
         }
     }
 }

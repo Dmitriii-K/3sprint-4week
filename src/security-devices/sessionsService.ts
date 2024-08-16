@@ -1,8 +1,8 @@
-import { SessionsRepository } from "./sessionsRepository";
+import { ISessionsRepository, ISessionsService } from "./sessionsInterface";
 
-export class SessionsService {
+export class SessionsService implements ISessionsService {
 
-    constructor(private sessionsRepository: SessionsRepository) {}
+    constructor(private sessionsRepository: ISessionsRepository) {}
 
     async deleteAllSessionsExceptCurrentOne(userId: string, device_id: string) {
         const result = await this.sessionsRepository.deleteAllSessionsExceptCurrentOne(userId, device_id);
@@ -14,6 +14,6 @@ export class SessionsService {
     }
     async findUserByDeviceId(deviceId: string) {
         const result = await this.sessionsRepository.findUserByDeviceId(deviceId);
-        return result;
+        return result
     }
 }

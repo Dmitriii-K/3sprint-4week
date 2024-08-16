@@ -1,11 +1,11 @@
 import { ObjectId, WithId } from "mongodb";
 import { CommentDBType, CommentViewModel, likeStatus } from "../input-output-types/comments-type";
 import { CommentModel } from "../db/schema-model-db";
-import { CommentRepository } from "./commentRepository";
+import { ICommentQueryRepository, ICommentRepository } from "./commentInterface";
 
-export class CommentQueryRepository {
+export class CommentQueryRepository implements ICommentQueryRepository{
 
-    constructor(private commentRepository: CommentRepository) {}
+    constructor(private commentRepository: ICommentRepository) {}
 
     async findCommentById(commentId: string, userId: string | null) {
         const mongoCommentId = new ObjectId(commentId);

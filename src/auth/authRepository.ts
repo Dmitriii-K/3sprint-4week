@@ -2,8 +2,9 @@ import { ObjectId } from "mongodb";
 import { UserDBModel } from "../input-output-types/users-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { ApiModel, SessionModel, UserModel } from "../db/schema-model-db";
+import { IAuthRepository } from "./authInterface";
 
-export class AuthRepository {
+export class AuthRepository implements IAuthRepository{
     async updateCode(userId: string, newCode: string) {
         const result = await UserModel.updateOne({ _id: userId }, { $set: { 'emailConfirmation.confirmationCode': newCode } });
         return result.modifiedCount === 1;
@@ -40,7 +41,7 @@ export class AuthRepository {
         return SessionModel.findOne({ device_id: deviceId });
     }
     async updateIat(iat: string, deviceId: string) {
-        return SessionModel.updateOne({ device_id: deviceId }, { $set: { iat: iat } });
+        await SessionModel.updateOne({ device_id: deviceId }, { $set: { iat: iat } });
     }
     async deleteSession(deviceId: string) {
         const result = await SessionModel.deleteOne({ device_id: deviceId });

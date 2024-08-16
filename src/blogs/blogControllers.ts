@@ -3,12 +3,11 @@ import { BlogInputModel, BlogViewModel, PaginatorBlogViewModel, TypePostForBlogH
 import { BlogPostInputModel, BlgId } from "../input-output-types/eny-type";
 import { PaginatorPostViewModel, PostViewModel } from "../input-output-types/posts-type";
 import { TypeBlogHalper } from "../input-output-types/blogs-type";
-import { BlogService } from "./blogService";
-import { BlogQueryRepository } from "./blogQueryRepository";
+import { IBlogService, IBlogQueryRepository } from "./blogInterface";
 
 export class BlogController {
 
-    constructor(private blogService: BlogService, private blogQueryRepository: BlogQueryRepository) {}
+    constructor(private blogService: IBlogService, private blogQueryRepository: IBlogQueryRepository) {}
 
     async createBlog(req: Request<{}, {}, BlogInputModel>, res: Response<BlogViewModel>) {
         try {
@@ -57,7 +56,7 @@ export class BlogController {
             res.sendStatus(500);
         }
     }
-    async getBlogById(req: Request, res: Response) {
+    async getBlogById(req: Request, res: Response<BlogViewModel>) {
         try {
             const blogResult = await this.blogQueryRepository.getBlogById(req.params.id);
             if (blogResult) {

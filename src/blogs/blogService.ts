@@ -1,11 +1,11 @@
 import { BlogDbType, BlogInputModel } from "../input-output-types/blogs-type";
 import { BlogPostInputModel } from "../input-output-types/eny-type";
 import { PostDbType } from "../input-output-types/posts-type";
-import { BlogRepository } from "./blogRepository";
+import { IBlogRepository, IBlogService } from "./blogInterface";
 
-export class BlogService {
+export class BlogService implements IBlogService {
 
-    constructor(private blogRepository: BlogRepository) {}
+    constructor(private blogRepository: IBlogRepository) {}
 
     async createBlog(data: BlogInputModel) {
         const createDate = new Date().toISOString();
@@ -56,7 +56,7 @@ export class BlogService {
         if (deleteResult) {
             return true;
         } else {
-            return null;
+            return false;
         }
     }
 }

@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { CommentInputModel, CommentDBType, PaginatorCommentViewModelDB, likeStatus } from "../input-output-types/comments-type";
 import { PostInputModel, PstId, PostViewModel, PaginatorPostViewModel, TypePostHalper } from "../input-output-types/posts-type";
-import { PostService } from "./postsService";
-import { PostQueryRepository } from "./postsQueryRepository";
+import { IPostQueryRepository, IPostService } from "./postInterface";
 
 export class PostController {
 
-    constructor(private postService: PostService, private postQueryRepository: PostQueryRepository) {}
+    constructor(private postService: IPostService, private postQueryRepository: IPostQueryRepository) {}
 
     async createPost(req: Request<{}, {}, PostInputModel>, res: Response<PostViewModel>) {
         try {

@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
+import { IBcryptService } from '../auth/authInterface';
 
-export class BcryptService {
+export class BcryptService implements IBcryptService {
     async createHashPassword(password: string) {
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);

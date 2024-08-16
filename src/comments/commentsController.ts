@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { ComId } from "../input-output-types/eny-type";
 import { CommentInputModel, CommentViewModel, likeStatus } from "../input-output-types/comments-type";
-import { CommentQueryRepository } from "./commentQueryRepositiry";
-import { CommentService } from "./commentService";
+import { ICommentQueryRepository, ICommentService } from "./commentInterface";
 
 export class CommentsController {
 
-    constructor(private commentQueryRepository: CommentQueryRepository, private commentService: CommentService) {}
+    constructor(private commentQueryRepository: ICommentQueryRepository, private commentService: ICommentService) {}
 
     async getComment(req: Request, res: Response<CommentViewModel>) {
         try {

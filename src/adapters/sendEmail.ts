@@ -1,69 +1,114 @@
+import { IEmailService } from "../auth/authInterface";
 import { SETTINGS } from "../settings";
 const nodemailer = require("nodemailer");
 
-export const sendMailService = {
-    async sendMail (email: string, confirmationCode: string) {
-        try {
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                //port: 465, // 587 for false
-                //secure: true, // Use `true` for port 465, `false` for all other ports
-                // logger: true,
-                // debug: true,
-                // secureConnection: false,
-                auth: {
+// export const sendMailService = {
+//     async sendMail (email: string, confirmationCode: string) {
+//         try {
+//             const transporter = nodemailer.createTransport({
+//                 service: "gmail",
+//                 //port: 465, // 587 for false
+//                 //secure: true, // Use `true` for port 465, `false` for all other ports
+//                 // logger: true,
+//                 // debug: true,
+//                 // secureConnection: false,
+//                 auth: {
+//                 user: "hometaskincubator@gmail.com",
+//                 pass: SETTINGS.PASSWORD_BY_EMAIL,
+//                 },
+//                 // tls: {
+//                 //     rejectUnauthorized: false,
+//                 // },
+//             });
+//                 const info = await transporter.sendMail({
+//                 from: 'Dmitry <hometaskincubator@gmail.com>', // sender address
+//                 to: email, // list of receivers
+//                 subject: "Hello ✔", // Subject line
+//                 text: "Hello bro!", // plain text body
+//                 html: ` <h1>Thanks for your registration</h1>
+//                 <p>To finish registration please follow the link below:
+//                 <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a>
+//                 </p>`, // html body
+//                 });
+//         } catch (error) {
+//             console.error('Send email error', error); //залогировать ошибку при отправке сообщения
+//         }
+//     }
+// };
+// export const passwordRecovery = {
+//     async sendMail (email: string, recoveryCode: string) {
+//         try {
+//             const transporter = nodemailer.createTransport({
+//                 service: "gmail",
+//                 //port: 465, // 587 for false
+//                 //secure: true, // Use `true` for port 465, `false` for all other ports
+//                 // logger: true,
+//                 // debug: true,
+//                 // secureConnection: false,
+//                 auth: {
+//                 user: "hometaskincubator@gmail.com",
+//                 pass: SETTINGS.PASSWORD_BY_EMAIL,
+//                 },
+//                 // tls: {
+//                 //     rejectUnauthorized: false,
+//                 // },
+//             });
+//                 const info = await transporter.sendMail({
+//                 from: 'Dmitry <hometaskincubator@gmail.com>', // sender address
+//                 to: email, // list of receivers
+//                 subject: "Hello ✔", // Subject line
+//                 text: "Hello bro!", // plain text body
+//                 html: `  <h1>Password recovery</h1>
+//                         <p>To finish password recovery please follow the link below:
+//                         <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a></p>`, // html body
+//                 });
+//         } catch (error) {
+//             console.error('Send email error', error); //залогировать ошибку при отправке сообщения
+//         }
+//     }
+// }
+
+export class EmailService implements IEmailService {
+    private transporter;
+    constructor() {
+        this.transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
                 user: "hometaskincubator@gmail.com",
                 pass: SETTINGS.PASSWORD_BY_EMAIL,
-                },
-                // tls: {
-                //     rejectUnauthorized: false,
-                // },
-            });
-                const info = await transporter.sendMail({
-                from: 'Dmitry <hometaskincubator@gmail.com>', // sender address
-                to: email, // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello bro!", // plain text body
+            },
+        });
+    }
+
+    async sendMail(email: string, confirmationCode: string): Promise<void> {
+        try {
+            await this.transporter.sendMail({
+                from: 'Dmitry <hometaskincubator@gmail.com>',
+                to: email,
+                subject: "Hello ✔",
+                text: "Hello bro!",
                 html: ` <h1>Thanks for your registration</h1>
                 <p>To finish registration please follow the link below:
                 <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a>
-                </p>`, // html body
-                });
+                </p>`,
+            });
         } catch (error) {
-            console.error('Send email error', error); //залогировать ошибку при отправке сообщения
+            console.error('Send email error', error);
         }
     }
-};
-
-export const passwordRecovery = {
-    async sendMail (email: string, recoveryCode: string) {
+    async sendPasswordRecoveryMail(email: string, recoveryCode: string): Promise<void> {
         try {
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                //port: 465, // 587 for false
-                //secure: true, // Use `true` for port 465, `false` for all other ports
-                // logger: true,
-                // debug: true,
-                // secureConnection: false,
-                auth: {
-                user: "hometaskincubator@gmail.com",
-                pass: SETTINGS.PASSWORD_BY_EMAIL,
-                },
-                // tls: {
-                //     rejectUnauthorized: false,
-                // },
-            });
-                const info = await transporter.sendMail({
-                from: 'Dmitry <hometaskincubator@gmail.com>', // sender address
-                to: email, // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello bro!", // plain text body
+            await this.transporter.sendMail({
+                from: 'Dmitry <hometaskincubator@gmail.com>',
+                to: email,
+                subject: "Hello ✔",
+                text: "Hello bro!",
                 html: `  <h1>Password recovery</h1>
                         <p>To finish password recovery please follow the link below:
-                        <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a></p>`, // html body
-                });
+                        <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a></p>`,
+            });
         } catch (error) {
-            console.error('Send email error', error); //залогировать ошибку при отправке сообщения
+            console.error('Send email error', error);
         }
     }
 }

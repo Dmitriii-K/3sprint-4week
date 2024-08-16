@@ -19,11 +19,7 @@ export class SessionsRepository {
         }
     }
     async findUserByDeviceId(deviceId: string) {
-        const user = await SessionModel.findOne({ device_id: deviceId });
-        if(user) {
-            return user
-        } else {
-            return null
-        }
+        const session = await SessionModel.findOne({ device_id: deviceId });
+        return session || null
     }
 }

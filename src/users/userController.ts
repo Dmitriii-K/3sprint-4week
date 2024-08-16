@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { PaginatorUserViewModel, TypeUserPagination, UserInputModel, UserViewModel } from "../input-output-types/users-type";
 import { OutputErrorsType } from "../input-output-types/output-errors-type";
-import { UserService } from "./userService";
-import { UserQueryRepository } from "./userQueryRepository";
+import { IUserQueryRepository, IUserService } from "./userInterface";
 
 export class UserController {
 
-    constructor(private userService: UserService, private userQueryRepository: UserQueryRepository) {}
+    constructor(private userService: IUserService, private userQueryRepository: IUserQueryRepository) {}
 
     async createUser(req: Request<{}, {}, UserInputModel>, res: Response<UserViewModel | OutputErrorsType>) {
         try {
@@ -22,7 +21,6 @@ export class UserController {
             res.sendStatus(500);
         }
     }
-
     async deleteUser(req: Request, res: Response) {
         try {
             const deleteResult = await this.userService.deleteUser(req.params.id);
@@ -36,7 +34,6 @@ export class UserController {
             res.sendStatus(500);
         }
     }
-
     async getUsers(req: Request<{}, {}, {}, TypeUserPagination>, res: Response<PaginatorUserViewModel>) {
         try {
             const users = await this.userQueryRepository.findUsers(req.query);
