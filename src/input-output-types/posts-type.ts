@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { likeStatus } from "./comments-type";
 
 export type PstId = {
@@ -38,6 +37,7 @@ export type NewestLikesType = {
   userId: string;
   login: string
 }
+
 export type PostDbType = {
   title: string;
   shortDescription: string;

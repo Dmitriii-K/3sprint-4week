@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 export type CommentInputModel = {
   content:	string;
 };
@@ -41,6 +39,7 @@ export type PaginatorCommentViewModelDB = {
   totalCount:	number;
   items: CommentViewModel[];
 };
+
 export type TypeCommentPagination = {
   sortBy: string;
   sortDirection: string;
@@ -53,6 +52,7 @@ export enum likeStatus {
   Like = 'Like',
   Dislike = 'Dislike'
 };
+
 export type LikesType = {
   addedAt: string;
   commentId: string;

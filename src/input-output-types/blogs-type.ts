@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 export type BlogViewModel = {
   id: string;
   name: string;
@@ -8,8 +6,8 @@ export type BlogViewModel = {
   createdAt: string;
   isMembership: boolean;
 };
+
 export type BlogDbType = {
-  // _id?: ObjectId;
   name: string;
   description: string;
   websiteUrl: string;
@@ -38,6 +36,7 @@ export type TypeBlogHalper = {
   pageNumber: number;
   pageSize: number;
 };
+
 export type TypePostForBlogHalper = {
   sortBy: string;
   sortDirection: string;
