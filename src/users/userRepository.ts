@@ -1,8 +1,10 @@
 // import { userCollection } from "../db/mongo-db";
+import { injectable } from "inversify";
 import { UserModel } from "../db/schema-model-db";
 import { UserDBModel } from "../input-output-types/users-type";
 import { ObjectId } from "mongodb";
 
+@injectable()
 export class UserRepository {
     async insertUser(user: UserDBModel) {
         const saveResult = await UserModel.create(user);

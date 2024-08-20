@@ -1,6 +1,8 @@
+import { injectable } from "inversify";
 import { UserDBModel, UserInputModel } from "../input-output-types/users-type";
 import { IBcryptService, IUserRepository, IUserService } from "./userInterface";
 
+@injectable()
 export class UserService implements IUserService {
 
     constructor(private userRepository: IUserRepository, private bcryptService: IBcryptService) {}

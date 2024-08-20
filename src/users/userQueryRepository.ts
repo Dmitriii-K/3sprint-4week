@@ -4,7 +4,9 @@ import { ObjectId, WithId } from "mongodb";
 import { userPagination } from "../middlewares/middlewareForAll";
 import { UserModel } from "../db/schema-model-db";
 import { IUserQueryRepository } from "./userInterface";
+import { injectable } from "inversify";
 
+@injectable()
 export class UserQueryRepository implements IUserQueryRepository {
     async findUserById(id: string) {
         const mongoId = new ObjectId(id);

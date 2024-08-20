@@ -8,8 +8,15 @@
       "forceConsistentCasingInFileNames": true,
       "strict": true,
       "noImplicitReturns": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }
+
+
+// "lib": ["es2016", "dom"],
+// "types": ["reflect-metadata"],
+// "moduleResolution": "node",

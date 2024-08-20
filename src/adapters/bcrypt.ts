@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { IBcryptService } from '../auth/authInterface';
+import { injectable } from 'inversify';
 
+@injectable()
 export class BcryptService implements IBcryptService {
     async createHashPassword(password: string) {
         const saltRounds = 10;

@@ -2,10 +2,14 @@ import { Request, Response } from "express";
 import { PaginatorUserViewModel, TypeUserPagination, UserInputModel, UserViewModel } from "../input-output-types/users-type";
 import { OutputErrorsType } from "../input-output-types/output-errors-type";
 import { IUserQueryRepository, IUserService } from "./userInterface";
+import { injectable, inject } from "inversify";
 
+@injectable()
 export class UserController {
 
-    constructor(private userService: IUserService, private userQueryRepository: IUserQueryRepository) {}
+    constructor(
+        @inject(IUserService) private userService: IUserService,
+        @inject(IUserQueryRepository) private userQueryRepository: IUserQueryRepository) {}
 
     async createUser(req: Request<{}, {}, UserInputModel>, res: Response<UserViewModel | OutputErrorsType>) {
         try {
