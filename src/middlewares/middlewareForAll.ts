@@ -6,6 +6,10 @@ import { AuthRepository } from "../auth/authRepository";
 import { SessionsRepository } from "../security-devices/sessionsRepository";
 import { UserRepository } from "../users/userRepository";
 import { JwtService } from "../adapters/jwtToken";
+import { authContainer } from "../auth/composition-root";
+import { sessionContainer } from "../security-devices/composition-root";
+import { userContainer } from "../users/composition-root";
+
 
 export const authMiddleware = (
   req: Request<any, any, any, any>,
@@ -39,7 +43,7 @@ const buff2 = Buffer.from(SETTINGS.ADMIN, "utf8");
 export const codedAuth = buff2.toString("base64");
 
 export const bearerAuth = async (req: Request, res: Response, next: NextFunction) => {
-  const userRepository = new UserRepository();
+  const userRepository = userContainer.resolve(UserRepository)
   const jwtService = new JwtService();
 
   if(!req.headers.authorization) {
@@ -62,7 +66,7 @@ export const bearerAuth = async (req: Request, res: Response, next: NextFunction
 };
 
 export const softBearerAuth = async (req: Request<any, any, any, any>, res: Response, next: NextFunction) => {
-  const userRepository = new UserRepository();
+  const userRepository = userContainer.resolve(UserRepository)
   const jwtService = new JwtService();
 
   if(!req.headers.authorization) { 
@@ -83,9 +87,9 @@ export const softBearerAuth = async (req: Request<any, any, any, any>, res: Resp
 };
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
-    const sessionsRepository = new SessionsRepository();
-    const userRepository = new UserRepository();
-    const jwtService = new JwtService();
+  const sessionsRepository = sessionContainer.resolve(SessionsRepository)
+  const userRepository = userContainer.resolve(UserRepository)
+  const jwtService = new JwtService();
 
     if(!req.cookies.refreshToken) {
       res.sendStatus(401);
@@ -158,7 +162,7 @@ export const commentsPagination = (query: {
 };
 
 export const countDocumentApi = async (req: Request, res: Response, next: NextFunction) => {
-  const authRepository = new AuthRepository();
+  const authRepository = authContainer.resolve(AuthRepository)
 
   const currentDate = new Date();
   const tenSecondsAgo = new Date(Date.now() - 10000);

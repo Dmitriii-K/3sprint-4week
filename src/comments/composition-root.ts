@@ -11,9 +11,9 @@ import { CommentsController } from './commentsController';
 // const commentQueryRepository = new CommentQueryRepository(commentRepository);
 // const commentsController = new CommentsController(commentQueryRepository, commentService);
 
-export const container = new Container();
+export const commentContainer = new Container();
 
-container.bind(CommentsController).to(CommentsController);
-container.bind<ICommentService>(TYPES.ICommentService).to(CommentService);
-container.bind<ICommentRepository>(TYPES.ICommentRepository).to(CommentRepository);
-container.bind<ICommentQueryRepository>(TYPES.ICommentQueryRepository).to(CommentQueryRepository);
+commentContainer.bind(CommentsController).to(CommentsController);
+commentContainer.bind<ICommentService>(TYPES.ICommentService).to(CommentService);
+commentContainer.bind<ICommentRepository>(TYPES.ICommentRepository).to(CommentRepository);
+commentContainer.bind<ICommentQueryRepository>(TYPES.ICommentQueryRepository).to(CommentQueryRepository);

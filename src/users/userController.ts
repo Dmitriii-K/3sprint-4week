@@ -6,7 +6,6 @@ import { injectable, inject } from "inversify";
 
 @injectable()
 export class UserController {
-
     constructor(
         @inject(TYPES.IUserService) private userService: IUserService,
         @inject(TYPES.IUserQueryRepository) private userQueryRepository: IUserQueryRepository) {}

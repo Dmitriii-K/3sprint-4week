@@ -4,7 +4,6 @@ import { IBcryptService, IUserRepository, IUserService, TYPES } from "./userInte
 
 @injectable()
 export class UserService implements IUserService {
-
     constructor(
         @inject(TYPES.IUserRepository) private userRepository: IUserRepository,
         @inject(TYPES.IBcryptService) private bcryptService: IBcryptService) {}

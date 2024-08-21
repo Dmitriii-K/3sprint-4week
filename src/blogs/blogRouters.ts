@@ -6,11 +6,11 @@ import {
     inputCheckErrorsMiddleware
 } from "../middlewares/express-validator";
 import { authMiddleware,  softBearerAuth } from "../middlewares/middlewareForAll";
-import { container } from "./composition-root";
+import { blogContainer } from "./composition-root";
 
 export const blogRouter = Router();
 
-const blogController = container.resolve(BlogController)
+const blogController = blogContainer.resolve(BlogController)
 
 blogRouter.get("/", blogController.getAllBlogs.bind(blogController));
 blogRouter.get("/:id/posts", softBearerAuth, blogController.getPostForBlog.bind(blogController));

@@ -3,7 +3,6 @@ import { ISessionsRepository, ISessionsService, TYPES } from "./sessionsInterfac
 
 @injectable()
 export class SessionsService implements ISessionsService {
-
     constructor(@inject(TYPES.ISessionsRepository) private sessionsRepository: ISessionsRepository) {}
 
     async deleteAllSessionsExceptCurrentOne(userId: string, device_id: string) {

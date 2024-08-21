@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { userInputValidation, inputCheckErrorsMiddleware } from "../middlewares/express-validator";
 import { authMiddleware } from "../middlewares/middlewareForAll";
-import { container/*, userController*/ } from "./composition-root";
+import { userContainer/*, userController*/ } from "./composition-root";
 import { UserController } from "./userController";
 
 export const usersRouter = Router();
 
-const userController = container.resolve(UserController)
+const userController = userContainer.resolve(UserController)
 
 usersRouter.get("/", authMiddleware, userController.getUsers.bind(userController));
 usersRouter.post(

@@ -5,7 +5,6 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class SessionsControllers {
-
     constructor(
         @inject(TYPES.ISessionsService) private sessionsService: ISessionsService,
         @inject(TYPES.ISessionsQueryRepository) private sessionsQueryRepository: ISessionsQueryRepository) {}

@@ -11,9 +11,9 @@ import { ISessionsQueryRepository, ISessionsRepository, ISessionsService, TYPES 
 // const sessionsQueryRepository = new SessionsQueryRepository();
 // const sessionsControllers = new SessionsControllers(sessionsService, sessionsQueryRepository);
 
-export const container = new Container();
+export const sessionContainer = new Container();
 
-container.bind(SessionsControllers).to(SessionsControllers);
-container.bind<ISessionsRepository>(TYPES.ISessionsRepository).to(SessionsRepository);
-container.bind<ISessionsService>(TYPES.ISessionsService).to(SessionsService);
-container.bind<ISessionsQueryRepository>(TYPES.ISessionsQueryRepository).to(SessionsQueryRepository);
+sessionContainer.bind(SessionsControllers).to(SessionsControllers);
+sessionContainer.bind<ISessionsRepository>(TYPES.ISessionsRepository).to(SessionsRepository);
+sessionContainer.bind<ISessionsService>(TYPES.ISessionsService).to(SessionsService);
+sessionContainer.bind<ISessionsQueryRepository>(TYPES.ISessionsQueryRepository).to(SessionsQueryRepository);

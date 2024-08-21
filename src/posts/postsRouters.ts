@@ -7,11 +7,11 @@ import {
   commentsValidation,
   likeStatusValidation
 } from "../middlewares/express-validator";
-import { container } from "./composition-root";
+import { postContainer } from "./composition-root";
 
 export const postRouter = Router();
 
-const postController = container.resolve(PostController)
+const postController = postContainer.resolve(PostController)
 
 postRouter.put("/:id/like-status", bearerAuth, likeStatusValidation, inputCheckErrorsMiddleware, postController.updateLikeStatus.bind(postController));
 postRouter.get("/", softBearerAuth, postController.getPosts.bind(postController));

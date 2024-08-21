@@ -15,11 +15,11 @@ import { AuthService } from './authService';
 // const authService = new AuthService(authRepository, bcryptService, jwtService, emailService);
 // const authController = new AuthController(authService, authRepository, bcryptService, jwtService);
 
-export const container = new Container();
+export const authContainer = new Container();
 
-container.bind(AuthController).to(AuthController);
-container.bind<IAuthService>(TYPES.IAuthService).to(AuthService);
-container.bind<IAuthRepository>(TYPES.IAuthRepository).to(AuthRepository);
-container.bind<IEmailService>(TYPES.IEmailService).to(EmailService);
-container.bind<IJwtService>(TYPES.IJwtService).to(JwtService);
-container.bind<IBcryptService>(TYPES.IBcryptService).to(BcryptService);
+authContainer.bind(AuthController).to(AuthController);
+authContainer.bind<IAuthService>(TYPES.IAuthService).to(AuthService);
+authContainer.bind<IAuthRepository>(TYPES.IAuthRepository).to(AuthRepository);
+authContainer.bind<IEmailService>(TYPES.IEmailService).to(EmailService);
+authContainer.bind<IJwtService>(TYPES.IJwtService).to(JwtService);
+authContainer.bind<IBcryptService>(TYPES.IBcryptService).to(BcryptService);

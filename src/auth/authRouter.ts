@@ -9,11 +9,11 @@ import { authCheckValidation,
     passwordAndCodeForRecoveryValidation } from "../middlewares/express-validator";
 import { countDocumentApi } from "../middlewares/middlewareForAll";
 import { bearerAuth, checkRefreshToken } from "../middlewares/middlewareForAll";
-import { container } from "./composition-root";
+import { authContainer } from "./composition-root";
 
 export const authRouter = Router();
 
-const authController = container.resolve(AuthController)
+const authController = authContainer.resolve(AuthController)
 
 authRouter.post("/login", countDocumentApi, authCheckValidation, inputCheckErrorsMiddleware, authController.authLoginUser.bind(authController));
 authRouter.post("/password-recovery", countDocumentApi, emailForPasswordRecoveryValidation, inputCheckErrorsMiddleware, authController.authPasswordRecovery.bind(authController));

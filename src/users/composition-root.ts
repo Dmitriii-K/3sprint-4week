@@ -16,10 +16,10 @@ import { TYPES } from './userInterface';
 // export const userController = new UserController(userService, userQueryRepository);
 
 
-export const container = new Container();
+export const userContainer = new Container();
 
-container.bind(UserController).to(UserController);
-container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
-container.bind<IBcryptService>(TYPES.IBcryptService).to(BcryptService);
-container.bind<IUserService>(TYPES.IUserService).to(UserService);
-container.bind<IUserQueryRepository>(TYPES.IUserQueryRepository).to(UserQueryRepository);
+userContainer.bind(UserController).to(UserController);
+userContainer.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
+userContainer.bind<IBcryptService>(TYPES.IBcryptService).to(BcryptService);
+userContainer.bind<IUserService>(TYPES.IUserService).to(UserService);
+userContainer.bind<IUserQueryRepository>(TYPES.IUserQueryRepository).to(UserQueryRepository);

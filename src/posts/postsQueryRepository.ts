@@ -4,14 +4,12 @@ import { NewestLikesType, PostDbType, PostViewModel, TypePostHalper } from "../i
 import { halper, commentsPagination } from "../middlewares/middlewareForAll";
 import { CommentModel, PostModel } from "../db/schema-model-db";
 import { UserDBModel } from "../input-output-types/users-type";
-import { ICommentQueryRepository, ICommentRepository, IPostQueryRepository, TYPES } from "./postInterface";
+import { ICommentRepository, IPostQueryRepository, TYPES } from "./postInterface";
 import { inject, injectable } from "inversify";
 
 @injectable()
 export class PostQueryRepository implements IPostQueryRepository {
-    constructor(
-        @inject(TYPES.ICommentRepository) private commentRepository: ICommentRepository,
-        @inject(TYPES.ICommentQueryRepository) private commentQueryRepository: ICommentQueryRepository) {}
+    constructor(@inject(TYPES.ICommentRepository) private commentRepository: ICommentRepository) {}
     
     async getAllPosts(helper: TypePostHalper, user: WithId<UserDBModel> | null) {
         const queryParams = halper(helper);
@@ -80,7 +78,7 @@ export class PostQueryRepository implements IPostQueryRepository {
                 like = await this.commentRepository.findLike(comment._id.toString(), userId);
             }
             const userLikeStatus = like ? like.status : likeStatus.None;
-            return this.commentQueryRepository.mapComment(comment, userLikeStatus);
+            return this.mapComment(comment, userLikeStatus);
         }));
 
         return {
