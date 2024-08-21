@@ -9,6 +9,9 @@ import { JwtService } from "../adapters/jwtToken";
 import { authContainer } from "../auth/composition-root";
 import { sessionContainer } from "../security-devices/composition-root";
 import { userContainer } from "../users/composition-root";
+// import { IUserRepository, TYPES } from "../users/userInterface";
+// import { inject } from "inversify";
+// import { IJwtService, TYPES as AUTH_TYPES } from "../auth/authInterface";
 
 
 export const authMiddleware = (
@@ -42,9 +45,45 @@ export const authMiddleware = (
 const buff2 = Buffer.from(SETTINGS.ADMIN, "utf8");
 export const codedAuth = buff2.toString("base64");
 
+// export class BearerAuth {
+//   constructor(
+//     @inject(TYPES.IUserRepository) private userRepository: IUserRepository,
+//     @inject(AUTH_TYPES.IJwtService) private jwtService: IJwtService,
+//   ){
+
+//   }
+//   async execute(req: Request, res: Response, next: NextFunction) {
+//     const userRepository = userContainer.resolve(UserRepository)
+   
+//     console.log("start bearerAuth execution")
+//     console.log(this.jwtService, " jwtService")
+//     if(!req.headers.authorization) {
+//       console.log("no token provided")
+//       res.status(401).json({});
+//       return;
+//     }
+//     const token = req.headers.authorization.split(" ")[1];
+//     const payload = jwtService.getUserIdByToken(token);
+//     console.log("token payload:", payload)
+//     if(!payload) return res.sendStatus(401);
+  
+//     // const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
+//     const user = await userRepository.findUserByMiddleware(payload.userId)
+//     console.log(user, " user")
+//     if(user) {
+//       console.log(user)
+//       req.user = user;
+//       next();
+//       return
+//     } else {
+//       return res.status(401).json({});
+//     }
+//   };
+// }
+
 export const bearerAuth = async (req: Request, res: Response, next: NextFunction) => {
   const userRepository = userContainer.resolve(UserRepository)
-  const jwtService = new JwtService();
+  const jwtService = authContainer.resolve(JwtService);
 
   if(!req.headers.authorization) {
     res.status(401).json({});
@@ -53,7 +92,6 @@ export const bearerAuth = async (req: Request, res: Response, next: NextFunction
   const token = req.headers.authorization.split(" ")[1];
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
-
   // const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
   const user = await userRepository.findUserByMiddleware(payload.userId)
   if(user) {
@@ -67,7 +105,7 @@ export const bearerAuth = async (req: Request, res: Response, next: NextFunction
 
 export const softBearerAuth = async (req: Request<any, any, any, any>, res: Response, next: NextFunction) => {
   const userRepository = userContainer.resolve(UserRepository)
-  const jwtService = new JwtService();
+  const jwtService = authContainer.resolve(JwtService);
 
   if(!req.headers.authorization) { 
       return next();
@@ -89,7 +127,7 @@ export const softBearerAuth = async (req: Request<any, any, any, any>, res: Resp
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
   const sessionsRepository = sessionContainer.resolve(SessionsRepository)
   const userRepository = userContainer.resolve(UserRepository)
-  const jwtService = new JwtService();
+  const jwtService = authContainer.resolve(JwtService);
 
     if(!req.cookies.refreshToken) {
       res.sendStatus(401);

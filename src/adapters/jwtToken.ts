@@ -59,10 +59,10 @@ generateToken(user: WithId<UserDBModel>, deviceId?: string): { accessToken: stri
         deviceId: deviceId ?? randomUUID()
     };
     const optionsAccessToken = {
-        expiresIn: '6000'
+        expiresIn: '6000s'
     };
     const optionsRefreshToken = {
-        expiresIn: '8000'
+        expiresIn: '8000s'
     };
     const secretKey = SETTINGS.JWT_SECRET_KEY;
     const accessToken: string = jwt.sign(payload, secretKey, optionsAccessToken);
@@ -74,6 +74,7 @@ getUserIdByToken(token: string): UnionPayload | null {
     try {
         return jwt.verify(token, SETTINGS.JWT_SECRET_KEY) as unknown as UnionPayload;
     } catch (error) {
+        // console.log(error, " error")
         return null;
     }
 }
