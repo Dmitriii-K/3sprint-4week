@@ -3,7 +3,9 @@ import { DeviceViewModel } from "../input-output-types/device-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { SessionModel } from "../db/schema-model-db";
 import { ISessionsQueryRepository } from "./sessionsInterface";
+import { injectable } from "inversify";
 
+@injectable()
 export class SessionsQueryRepository implements ISessionsQueryRepository{
     async findSessions(userId: string): Promise<DeviceViewModel[] | null> {
         if (!userId) {

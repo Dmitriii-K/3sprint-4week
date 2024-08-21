@@ -1,11 +1,12 @@
+import { inject, injectable } from "inversify";
 import { BlogDbType, BlogInputModel } from "../input-output-types/blogs-type";
 import { BlogPostInputModel } from "../input-output-types/eny-type";
 import { PostDbType } from "../input-output-types/posts-type";
-import { IBlogRepository, IBlogService } from "./blogInterface";
+import { IBlogRepository, IBlogService, TYPES } from "./blogInterface";
 
+@injectable()
 export class BlogService implements IBlogService {
-
-    constructor(private blogRepository: IBlogRepository) {}
+    constructor(@inject(TYPES.IBlogRepository) private blogRepository: IBlogRepository) {}
 
     async createBlog(data: BlogInputModel) {
         const createDate = new Date().toISOString();

@@ -3,7 +3,9 @@ import { UserDBModel } from "../input-output-types/users-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { ApiModel, SessionModel, UserModel } from "../db/schema-model-db";
 import { IAuthRepository } from "./authInterface";
+import { injectable } from "inversify";
 
+@injectable()
 export class AuthRepository implements IAuthRepository{
     async updateCode(userId: string, newCode: string) {
         const result = await UserModel.updateOne({ _id: userId }, { $set: { 'emailConfirmation.confirmationCode': newCode } });

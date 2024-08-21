@@ -1,11 +1,13 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { UserDBModel, UserInputModel } from "../input-output-types/users-type";
-import { IBcryptService, IUserRepository, IUserService } from "./userInterface";
+import { IBcryptService, IUserRepository, IUserService, TYPES } from "./userInterface";
 
 @injectable()
 export class UserService implements IUserService {
 
-    constructor(private userRepository: IUserRepository, private bcryptService: IBcryptService) {}
+    constructor(
+        @inject(TYPES.IUserRepository) private userRepository: IUserRepository,
+        @inject(TYPES.IBcryptService) private bcryptService: IBcryptService) {}
 
     async createUser(data: UserInputModel) {
         const userExist = await this.userRepository.findUserByLogiOrEmail({ login: data.login, email: data.email });

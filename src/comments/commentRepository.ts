@@ -2,8 +2,11 @@
 import { ObjectId } from "mongodb";
 import { CommentModel, LikesModel } from "../db/schema-model-db";
 import { LikesType } from "../input-output-types/comments-type";
+import { ICommentRepository } from "./commentInterface";
+import { injectable } from "inversify";
 
-export class CommentRepository {
+@injectable()
+export class CommentRepository implements ICommentRepository{
     async updateComment(id: string, content: string) {
         const mongoId = new ObjectId(id);
         const updateComment = await CommentModel.updateOne({ _id: mongoId }, { $set: { content } });

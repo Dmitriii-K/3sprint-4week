@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { IEmailService } from "../auth/authInterface";
 import { SETTINGS } from "../settings";
 const nodemailer = require("nodemailer");
@@ -68,6 +69,7 @@ const nodemailer = require("nodemailer");
 //     }
 // }
 
+@injectable()
 export class EmailService implements IEmailService {
     private transporter;
     constructor() {

@@ -16,3 +16,9 @@ export interface ISessionsRepository {
     deleteSessionById(deviceId: string): Promise<boolean>;
     findUserByDeviceId(deviceId: string): Promise<SessionsType | null>;
 }
+
+export const TYPES = {
+    ISessionsRepository: Symbol.for("ISessionsRepository"),
+    ISessionsService: Symbol.for("ISessionsService"),
+    ISessionsQueryRepository: Symbol.for("ISessionsQueryRepository")
+};

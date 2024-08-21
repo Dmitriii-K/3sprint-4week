@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import { DeviceViewModel } from "../input-output-types/device-type";
-import { ISessionsQueryRepository, ISessionsService } from "./sessionsInterface";
+import { ISessionsQueryRepository, ISessionsService, TYPES } from "./sessionsInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class SessionsControllers {
 
-    constructor(private sessionsService: ISessionsService, private sessionsQueryRepository: ISessionsQueryRepository) {}
+    constructor(
+        @inject(TYPES.ISessionsService) private sessionsService: ISessionsService,
+        @inject(TYPES.ISessionsQueryRepository) private sessionsQueryRepository: ISessionsQueryRepository) {}
 
     async deleteAllSessionsExceptCurrentOne(req: Request, res: Response) {
         try {

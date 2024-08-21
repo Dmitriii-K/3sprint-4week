@@ -3,9 +3,10 @@ import { injectable } from "inversify";
 import { UserModel } from "../db/schema-model-db";
 import { UserDBModel } from "../input-output-types/users-type";
 import { ObjectId } from "mongodb";
+import { IUserRepository } from "./userInterface";
 
 @injectable()
-export class UserRepository {
+export class UserRepository implements IUserRepository{
     async insertUser(user: UserDBModel) {
         const saveResult = await UserModel.create(user);
         return saveResult._id.toString();

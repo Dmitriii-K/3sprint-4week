@@ -2,8 +2,11 @@ import { ObjectId } from "mongodb";
 import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { CommentDBType } from "../input-output-types/comments-type";
 import { BlogModel, CommentModel, PostModel } from "../db/schema-model-db";
+import { injectable } from "inversify";
+import { IPostRepository } from "./postInterface";
 
-export class PostRepository {
+@injectable()
+export class PostRepository implements IPostRepository{
     async findBlogNameForId(BlogId: string) {
         const mongoBlogId = new ObjectId(BlogId);
         return BlogModel.findOne({ _id: mongoBlogId });

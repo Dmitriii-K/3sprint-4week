@@ -9,20 +9,11 @@ import { authCheckValidation,
     passwordAndCodeForRecoveryValidation } from "../middlewares/express-validator";
 import { countDocumentApi } from "../middlewares/middlewareForAll";
 import { bearerAuth, checkRefreshToken } from "../middlewares/middlewareForAll";
-import { AuthService } from "./authService";
-import { AuthRepository } from "./authRepository";
-import { BcryptService } from "../adapters/bcrypt";
-import { JwtService } from "../adapters/jwtToken";
-import { EmailService } from "../adapters/sendEmail";
+import { container } from "./composition-root";
 
 export const authRouter = Router();
 
-const authRepository = new AuthRepository();
-const bcryptService = new BcryptService();
-const jwtService = new JwtService();
-const emailService = new EmailService();
-const authService = new AuthService(authRepository, bcryptService, jwtService, emailService);
-const authController = new AuthController(authService, authRepository, bcryptService, jwtService);
+const authController = container.resolve(AuthController)
 
 authRouter.post("/login", countDocumentApi, authCheckValidation, inputCheckErrorsMiddleware, authController.authLoginUser.bind(authController));
 authRouter.post("/password-recovery", countDocumentApi, emailForPasswordRecoveryValidation, inputCheckErrorsMiddleware, authController.authPasswordRecovery.bind(authController));

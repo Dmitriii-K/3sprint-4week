@@ -4,13 +4,16 @@ import { BlogModel, PostModel } from "../db/schema-model-db";
 import { halper } from "../middlewares/middlewareForAll";
 import { NewestLikesType, PostDbType, PostViewModel } from "../input-output-types/posts-type";
 import { likeStatus, LikesType } from "../input-output-types/comments-type";
-import { IBlogQueryRepository } from "./blogInterface";
+import { IBlogQueryRepository, TYPES } from "./blogInterface";
 import { ICommentRepository } from "../comments/commentInterface";
 import { IPostQueryRepository } from "../posts/postInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class BlogQueryRepository implements IBlogQueryRepository{
-
-    constructor(private commentRepository: ICommentRepository, private postQueryRepository: IPostQueryRepository) {}
+    constructor(
+        @inject(TYPES.ICommentRepository) private commentRepository: ICommentRepository,
+        @inject(TYPES.IPostQueryRepository) private postQueryRepository: IPostQueryRepository) {}
 
     async getAllBlogs(helper: TypeBlogHalper) {
         const queryParams = halper(helper);

@@ -6,7 +6,7 @@ import { EmailConfirmationType, UserDBModel } from '../input-output-types/users-
 import { ApiInfoType } from '../input-output-types/eny-type'
 import { SessionsType } from '../input-output-types/sessions-types'
 
-export const BlogSchema = new mongoose.Schema<BlogDbType>({
+const BlogSchema = new mongoose.Schema<BlogDbType>({
     name: { type: String, require: true },
     description: { type: String, require: true },
     websiteUrl: { type: String, require: true },
@@ -25,14 +25,14 @@ const extendedLikesInfoSchema = new mongoose.Schema<ExtendedLikesInfoType>({
     dislikesCount: { type: Number, require: true },
     newestLikes:{type: [newestLikesSchema], require: true}
 }, { _id: false })
-export const PostSchema = new mongoose.Schema<PostDbType>({
+const PostSchema = new mongoose.Schema<PostDbType>({
     title: { type: String, require: true },
     shortDescription: { type: String, require: true },
     content: { type: String, require: true },
     blogId: { type: String, require: true },
     blogName: { type: String, require: true },
     createdAt: { type: String, require: true },
-    extendedLikesInfo: { type: extendedLikesInfoSchema, require: true }
+    extendedLikesInfo: { type: extendedLikesInfoSchema, require: true }// НЕ СОЗДАНО
 })
 export const PostModel = mongoose.model<PostDbType>('posts', PostSchema)
 
@@ -44,16 +44,16 @@ const likesCountSchema = new mongoose.Schema<LikesCount>({
     likesCount: { type: Number, require: true },
     dislikesCount: { type: Number, require: true }
 }, { _id: false });
-export const CommentSchema = new mongoose.Schema<CommentDBType>({
+const CommentSchema = new mongoose.Schema<CommentDBType>({
     postId: { type: String, require: true },
     content: { type: String, require: true },
     createdAt: { type: String, require: true },
     commentatorInfo: { type: commentatorInfoSchema, require: true },
-    likesInfo: { type: likesCountSchema, require: true },
+    likesInfo: { type: likesCountSchema, require: true } // НЕ СОЗДАНО
 })
 export const CommentModel = mongoose.model<CommentDBType>('comments', CommentSchema)
 
-export const LikesSchema = new mongoose.Schema<LikesType>({
+const LikesSchema = new mongoose.Schema<LikesType>({
     addedAt: {type: String, require: true},
     commentId: {type: String, require: true},
     userId: {type: String, require: true},
@@ -67,7 +67,7 @@ const emailConfirmationSchema = new mongoose.Schema<EmailConfirmationType>({
     expirationDate: {type: String, require: false},
     isConfirmed: {type: Boolean, require: true}
 }, { _id: false });
-export const UserSchema = new mongoose.Schema<UserDBModel>({
+const UserSchema = new mongoose.Schema<UserDBModel>({
     login: { type: String, require: true },
     password: { type: String, require: true },
     email: { type: String, require: true },
@@ -76,14 +76,14 @@ export const UserSchema = new mongoose.Schema<UserDBModel>({
 })
 export const UserModel = mongoose.model<UserDBModel>('users', UserSchema)
 
-export const ApiSchema = new mongoose.Schema<ApiInfoType>({
+const ApiSchema = new mongoose.Schema<ApiInfoType>({
     ip: { type: String, require: true },
     URL: { type: String, require: true }, 
     date: { type: Date, require: true }, 
 })
 export const ApiModel = mongoose.model<ApiInfoType>('api-info', ApiSchema)
 
-export const SessionSchema = new mongoose.Schema<SessionsType>({
+const SessionSchema = new mongoose.Schema<SessionsType>({
     user_id: { type: String, require: true },
     device_id: { type: String, require: true },
     iat: { type: String, require: true },
@@ -91,4 +91,4 @@ export const SessionSchema = new mongoose.Schema<SessionsType>({
     device_name: { type: String, require: true },
     ip: { type: String, require: true }
 })
-export const SessionModel = mongoose.model<SessionsType>('sessions', SessionSchema)
+export const SessionModel = mongoose.model<SessionsType>('sessions', SessionSchema)// НЕТ В БД

@@ -6,22 +6,11 @@ import {
     inputCheckErrorsMiddleware
 } from "../middlewares/express-validator";
 import { authMiddleware,  softBearerAuth } from "../middlewares/middlewareForAll";
-import { BlogService } from "./blogService";
-import { BlogRepository } from "./blogRepository";
-import { BlogQueryRepository } from "./blogQueryRepository";
-import { CommentRepository } from "../comments/commentRepository";
-import { PostQueryRepository } from "../posts/postsQueryRepository";
-import { CommentQueryRepository } from "../comments/commentQueryRepositiry";
+import { container } from "./composition-root";
 
 export const blogRouter = Router();
 
-const blogRepository = new BlogRepository();
-const blogService = new BlogService(blogRepository);
-const commentRepository = new CommentRepository();
-const commentQueryRepository = new CommentQueryRepository(commentRepository);
-const postQueryRepository = new PostQueryRepository(commentRepository, commentQueryRepository);
-const blogQueryRepository = new BlogQueryRepository(commentRepository, postQueryRepository);
-const blogController = new BlogController(blogService, blogQueryRepository);
+const blogController = container.resolve(BlogController)
 
 blogRouter.get("/", blogController.getAllBlogs.bind(blogController));
 blogRouter.get("/:id/posts", softBearerAuth, blogController.getPostForBlog.bind(blogController));

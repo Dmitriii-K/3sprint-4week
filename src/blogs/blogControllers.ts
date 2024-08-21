@@ -3,11 +3,14 @@ import { BlogInputModel, BlogViewModel, PaginatorBlogViewModel, TypePostForBlogH
 import { BlogPostInputModel, BlgId } from "../input-output-types/eny-type";
 import { PaginatorPostViewModel, PostViewModel } from "../input-output-types/posts-type";
 import { TypeBlogHalper } from "../input-output-types/blogs-type";
-import { IBlogService, IBlogQueryRepository } from "./blogInterface";
+import { IBlogService, IBlogQueryRepository, TYPES } from "./blogInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class BlogController {
-
-    constructor(private blogService: IBlogService, private blogQueryRepository: IBlogQueryRepository) {}
+    constructor(
+        @inject(TYPES.IBlogService) private blogService: IBlogService,
+        @inject(TYPES.IBlogQueryRepository) private blogQueryRepository: IBlogQueryRepository) {}
 
     async createBlog(req: Request<{}, {}, BlogInputModel>, res: Response<BlogViewModel>) {
         try {

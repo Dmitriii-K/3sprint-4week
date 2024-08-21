@@ -24,3 +24,9 @@ export interface ICommentRepository {
     updateLikeStatus(commentId: string, status: likeStatus): Promise<boolean>;
     deleteComment(id: string): Promise<boolean>;
 }
+
+export const TYPES = {
+    ICommentService: Symbol.for("ICommentService"),
+    ICommentRepository: Symbol.for("ICommentRepository"),
+    ICommentQueryRepository: Symbol.for("ICommentQueryRepository")
+};

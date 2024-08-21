@@ -4,6 +4,7 @@ import { UserDBModel } from '../input-output-types/users-type';
 import {  WithId } from 'mongodb';
 import { randomUUID } from 'crypto';
 import { IJwtService } from '../auth/authInterface';
+import { injectable } from 'inversify';
 
 export type PayloadType  = {
 userId: string;
@@ -48,6 +49,7 @@ export type UnionPayload = PayloadType & SystemPayload
 //   }
 // }
 
+@injectable()
 export class JwtService implements IJwtService {
 generateToken(user: WithId<UserDBModel>, deviceId?: string): { accessToken: string, refreshToken: string } {
     const payload: PayloadType = {

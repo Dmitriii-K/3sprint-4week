@@ -42,3 +42,11 @@ export interface ICommentRepository {
 export interface ICommentQueryRepository {
     mapComment(comment: WithId<CommentDBType>, userLikeStatus?: likeStatus): CommentViewModel;
 }
+
+export const TYPES = {
+    IPostService: Symbol.for("IPostService"),
+    IPostRepository: Symbol.for("IPostRepository"),
+    ICommentRepository: Symbol.for("ICommentRepository"),
+    ICommentQueryRepository: Symbol.for("ICommentQueryRepository"),
+    IPostQueryRepository: Symbol.for("IPostQueryRepository")
+};

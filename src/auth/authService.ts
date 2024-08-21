@@ -4,11 +4,16 @@ import { UserDBModel, UserInputModel } from "../input-output-types/users-type";
 import { WithId } from "mongodb";
 import { SessionsType } from "../input-output-types/sessions-types";
 import { NewPasswordRecoveryInputModel } from "../input-output-types/auth-type";
-import { IAuthRepository, IAuthService, IBcryptService, IEmailService, IJwtService } from "./authInterface";
+import { IAuthRepository, IAuthService, IBcryptService, IEmailService, IJwtService, TYPES } from "./authInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class AuthService implements IAuthService{
-
-    constructor(private authRepository: IAuthRepository, private bcryptService: IBcryptService, private jwtService: IJwtService, private emailService: IEmailService) {}
+    constructor(
+        @inject(TYPES.IAuthRepository) private authRepository: IAuthRepository,
+        @inject(TYPES.IBcryptService) private bcryptService: IBcryptService,
+        @inject(TYPES.IJwtService) private jwtService: IJwtService,
+        @inject(TYPES.IEmailService) private emailService: IEmailService) {}
 
     async checkCredentials(loginOrEmail: string) {
         const user = await this.authRepository.findUserByLoginOrEmail(loginOrEmail);

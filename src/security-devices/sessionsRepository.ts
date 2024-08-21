@@ -1,7 +1,10 @@
 // import {sessionsCollection} from "../db/mongo-db";
+import { injectable } from "inversify";
 import { SessionModel } from "../db/schema-model-db";
+import { ISessionsRepository } from "./sessionsInterface";
 
-export class SessionsRepository {
+@injectable()
+export class SessionsRepository implements ISessionsRepository{
     async deleteSessionById(deviceId: string) {
         const result = await SessionModel.deleteOne({ device_id: deviceId });
         return result.deletedCount === 1;

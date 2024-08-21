@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { ComId } from "../input-output-types/eny-type";
 import { CommentInputModel, CommentViewModel, likeStatus } from "../input-output-types/comments-type";
-import { ICommentQueryRepository, ICommentService } from "./commentInterface";
+import { ICommentQueryRepository, ICommentService, TYPES } from "./commentInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class CommentsController {
-
-    constructor(private commentQueryRepository: ICommentQueryRepository, private commentService: ICommentService) {}
+    constructor(
+        @inject(TYPES.ICommentQueryRepository) private commentQueryRepository: ICommentQueryRepository,
+        @inject(TYPES.ICommentService) private commentService: ICommentService) {}
 
     async getComment(req: Request, res: Response<CommentViewModel>) {
         try {

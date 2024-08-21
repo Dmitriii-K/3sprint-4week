@@ -1,7 +1,13 @@
 import { UserDBModel, UserInputModel, UserViewModel, TypeUserPagination, PaginatorUserViewModel } from "../input-output-types/users-type";
 
+// export interface IUserController {
+//     createUser(): Promise<void>;
+//     deleteUser(): Promise<void>;
+//     getUsers(): Promise<void>;
+// }
+
 export interface IUserService {
-    createUser(user: UserInputModel): Promise<string | false>; // так же нужно использовать null ?
+    createUser(user: UserInputModel): Promise<string | false>;
     deleteUser(id: string): Promise<boolean>;
 }
 
@@ -19,3 +25,10 @@ export interface IUserRepository {
 export interface IBcryptService {
     createHashPassword(password: string): Promise<string>;
 }
+
+export const TYPES = {
+    IUserRepository: Symbol.for("IUserRepository"),
+    IBcryptService: Symbol.for("IBcryptService"),
+    IUserService: Symbol.for("IUserService"),
+    IUserQueryRepository: Symbol.for("IUserQueryRepository")
+};

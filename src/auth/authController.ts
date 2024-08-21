@@ -3,11 +3,16 @@ import { LoginInputModel, LoginSuccessViewModel, NewPasswordRecoveryInputModel, 
 import { OutputErrorsType } from "../input-output-types/output-errors-type";
 import { UserInputModel } from "../input-output-types/users-type";
 import { MeViewModel } from "../input-output-types/auth-type";
-import { IAuthService, IAuthRepository, IBcryptService, IJwtService } from "./authInterface";
+import { IAuthService, IAuthRepository, IBcryptService, IJwtService, TYPES } from "./authInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class AuthController {
-
-    constructor(private authService: IAuthService, private authRepository: IAuthRepository, private bcryptService: IBcryptService, private jwtService: IJwtService) {}
+    constructor(
+        @inject(TYPES.IAuthService) private authService: IAuthService,
+        @inject(TYPES.IAuthRepository) private authRepository: IAuthRepository,
+        @inject(TYPES.IBcryptService) private bcryptService: IBcryptService,
+        @inject(TYPES.IJwtService) private jwtService: IJwtService) {}
 
     async authLoginUser(req: Request<{}, {}, LoginInputModel>, res: Response<LoginSuccessViewModel | OutputErrorsType>) {
         try {

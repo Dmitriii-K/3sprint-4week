@@ -1,11 +1,12 @@
 import { ObjectId, WithId } from "mongodb";
 import { CommentDBType, CommentViewModel, likeStatus } from "../input-output-types/comments-type";
 import { CommentModel } from "../db/schema-model-db";
-import { ICommentQueryRepository, ICommentRepository } from "./commentInterface";
+import { ICommentQueryRepository, ICommentRepository, TYPES } from "./commentInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class CommentQueryRepository implements ICommentQueryRepository{
-
-    constructor(private commentRepository: ICommentRepository) {}
+    constructor(@inject(TYPES.ICommentRepository) private commentRepository: ICommentRepository) {}
 
     async findCommentById(commentId: string, userId: string | null) {
         const mongoCommentId = new ObjectId(commentId);

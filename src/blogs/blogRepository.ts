@@ -2,8 +2,11 @@ import { ObjectId } from "mongodb";
 import { BlogModel, PostModel } from "../db/schema-model-db";
 import { BlogDbType, BlogInputModel } from "../input-output-types/blogs-type";
 import { PostDbType } from "../input-output-types/posts-type";
+import { IBlogRepository } from "./blogInterface";
+import { injectable } from "inversify";
 
-export class BlogRepository {
+@injectable()
+export class BlogRepository implements IBlogRepository{
     async insertBlog(data: BlogDbType) {
         const result = BlogModel.create(data);
         return (await result)._id.toString();

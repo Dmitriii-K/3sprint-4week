@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { CommentInputModel, CommentDBType, PaginatorCommentViewModelDB, likeStatus } from "../input-output-types/comments-type";
 import { PostInputModel, PstId, PostViewModel, PaginatorPostViewModel, TypePostHalper } from "../input-output-types/posts-type";
-import { IPostQueryRepository, IPostService } from "./postInterface";
+import { IPostQueryRepository, IPostService, TYPES } from "./postInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class PostController {
-
-    constructor(private postService: IPostService, private postQueryRepository: IPostQueryRepository) {}
+    constructor(
+        @inject(TYPES.IPostService) private postService: IPostService,
+        @inject(TYPES.IPostQueryRepository) private postQueryRepository: IPostQueryRepository) {}
 
     async createPost(req: Request<{}, {}, PostInputModel>, res: Response<PostViewModel>) {
         try {

@@ -2,11 +2,14 @@ import { WithId } from "mongodb";
 import { CommentDBType, CommentInputModel, LikesType, likeStatus } from "../input-output-types/comments-type";
 import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { UserDBModel } from "../input-output-types/users-type";
-import { ICommentRepository, IPostRepository, IPostService } from "./postInterface";
+import { ICommentRepository, IPostRepository, IPostService, TYPES } from "./postInterface";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class PostService implements IPostService{
-
-    constructor(private postRepository: IPostRepository, private commentRepository: ICommentRepository) {}
+    constructor(
+        @inject(TYPES.IPostRepository) private postRepository: IPostRepository,
+        @inject(TYPES.ICommentRepository) private commentRepository: ICommentRepository) {}
 
     async createPost(data: PostInputModel, id: string) {
         const findBlogNameForId = await this.postRepository.findBlogNameForId(id);

@@ -45,3 +45,11 @@ export interface IJwtService {
     generateToken(user: WithId<UserDBModel>, deviceId?: string): { accessToken: string, refreshToken: string };
     getUserIdByToken(token: string): UnionPayload | null;
 }
+
+export const TYPES = {
+    IAuthService: Symbol.for("IAuthService"),
+    IAuthRepository: Symbol.for("IAuthRepository"),
+    IBcryptService: Symbol.for("IBcryptService"),
+    IEmailService: Symbol.for("IEmailService"),
+    IJwtService: Symbol.for("IJwtService")
+};
